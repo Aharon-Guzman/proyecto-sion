@@ -2,6 +2,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Sion.DAL.Context;
 using Sion.DAL.Data.Seeders;
+using Sion.DAL.Interfaces;
+using Sion.DAL.Repositories;
+using Sion.BLL.Interfaces;
+using Sion.BLL.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,25 +20,28 @@ builder.Services.AddRazorPages();
 builder.Services.AddDbContext<SionDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("SionDb")));
 
-// ?? Repositorios DAL (se agregan en EPIC-003) ?????????????????
-// builder.Services.AddScoped<ISeccionHomeRepository, SeccionHomeRepository>();
-// builder.Services.AddScoped<IImagenGaleriaRepository, ImagenGaleriaRepository>();
-// builder.Services.AddScoped<IDonacionRepository, DonacionRepository>();
-// builder.Services.AddScoped<IConfiguracionSitioRepository, ConfiguracionSitioRepository>();
-// builder.Services.AddScoped<ILogAuditoriaRepository, LogAuditoriaRepository>();
+// Repositorios DAL (se agregan en EPIC-003)
+ builder.Services.AddScoped<ISeccionHomeRepository, SeccionHomeRepository>();
+ builder.Services.AddScoped<IImagenGaleriaRepository, ImagenGaleriaRepository>();
+ builder.Services.AddScoped<IDonacionRepository, DonacionRepository>();
+ builder.Services.AddScoped<IConfiguracionSitioRepository, ConfiguracionSitioRepository>();
+ builder.Services.AddScoped<ILogAuditoriaRepository, LogAuditoriaRepository>();
 
-// ?? Servicios BLL (se agregan en EPIC-003) ????????????????????
-// builder.Services.AddScoped<ISeccionHomeService, SeccionHomeService>();
-// builder.Services.AddScoped<IImagenGaleriaService, ImagenGaleriaService>();
-// builder.Services.AddScoped<IDonacionService, DonacionService>();
-// builder.Services.AddScoped<IConfiguracionSitioService, ConfiguracionSitioService>();
-// builder.Services.AddScoped<ILogAuditoriaService, LogAuditoriaService>();
+//  Servicios BLL (se agregan en EPIC-003) 
+ builder.Services.AddScoped<ISeccionHomeService, SeccionHomeService>();
+ builder.Services.AddScoped<IImagenGaleriaService, ImagenGaleriaService>();
+ builder.Services.AddScoped<IDonacionService, DonacionService>();
+ builder.Services.AddScoped<IConfiguracionSitioService, ConfiguracionSitioService>();
+ builder.Services.AddScoped<ILogAuditoriaService, LogAuditoriaService>();
+ builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 
 // Identity
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddEntityFrameworkStores<SionDbContext>()
     .AddDefaultTokenProviders();
 
+//Servicio de cache en memoria
+builder.Services.AddMemoryCache();
 // ??????????????????????????????????????????????????????????????
 // PIPELINE HTTP (middleware)
 // ??????????????????????????????????????????????????????????????
