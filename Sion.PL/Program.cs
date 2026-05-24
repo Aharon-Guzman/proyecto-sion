@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using Sion.DAL.Context;
+using Sion.DAL.Data.Seeders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +14,7 @@ builder.Services.AddRazorPages();
 
 // ?? Base de datos ?????????????????????????????????????????????
 builder.Services.AddDbContext<SionDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("SionDb")));
 
 // ?? Repositorios DAL (se agregan en EPIC-003) ?????????????????
 // builder.Services.AddScoped<ISeccionHomeRepository, SeccionHomeRepository>();
@@ -28,8 +30,10 @@ builder.Services.AddDbContext<SionDbContext>(options =>
 // builder.Services.AddScoped<IConfiguracionSitioService, ConfiguracionSitioService>();
 // builder.Services.AddScoped<ILogAuditoriaService, LogAuditoriaService>();
 
-// ?? Autenticación Identity (se agrega en F-005.1) ?????????????
-// builder.Services.AddDefaultIdentity<IdentityUser>( ... )
+// Identity
+builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+    .AddEntityFrameworkStores<SionDbContext>()
+    .AddDefaultTokenProviders();
 
 // ??????????????????????????????????????????????????????????????
 // PIPELINE HTTP (middleware)
@@ -42,7 +46,14 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Error");
     app.UseHsts();
 }
-
+// Seeders
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<SionDbContext>();
+    await AdminSeeder.SeedAsync(services);
+    await SiteDataSeeder.SeedAsync(context);
+}
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();

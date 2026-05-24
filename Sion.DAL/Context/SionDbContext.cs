@@ -1,9 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Sion.DAL.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+
 
 namespace Sion.DAL.Context
 {
-    public class SionDbContext : DbContext
+    public class SionDbContext : IdentityDbContext<IdentityUser>
     {
         public SionDbContext(DbContextOptions<SionDbContext> options) : base(options) { }
 
