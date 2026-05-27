@@ -6,6 +6,7 @@ using Sion.DAL.Interfaces;
 using Sion.DAL.Repositories;
 using Sion.BLL.Interfaces;
 using Sion.BLL.Services;
+using Sion.PL.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,6 +48,7 @@ builder.Services.AddMemoryCache();
 // ??????????????????????????????????????????????????????????????
 
 var app = builder.Build();
+app.UseMiddleware<ErrorHandlingMiddleware>();
 
 if (!app.Environment.IsDevelopment())
 {
@@ -58,12 +60,14 @@ using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     var context = services.GetRequiredService<SionDbContext>();
+    await context.Database.MigrateAsync();
     await AdminSeeder.SeedAsync(services);
     await SiteDataSeeder.SeedAsync(context);
 }
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapRazorPages();
 

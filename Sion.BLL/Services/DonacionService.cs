@@ -38,8 +38,8 @@ namespace Sion.BLL.Services
 
         public async Task RegistrarAsync(DonacionViewModel viewModel)
         {
-            var existe = await _repository.GetAllAsync();
-            if (existe.Any(d => d.TransaccionPaypalId == viewModel.TransaccionPaypalId))
+            var existe = await _repository.GetByPaypalIdAsync(viewModel.TransaccionPaypalId);
+            if (existe != null)
                 return;
 
             var entidad = new Donacion

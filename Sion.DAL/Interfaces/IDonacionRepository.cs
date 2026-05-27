@@ -10,5 +10,6 @@ namespace Sion.DAL.Interfaces
     public interface IDonacionRepository : IRepository<Donacion>
     {
         Task<IEnumerable<Donacion>> GetByFechasAsync(DateTime desde, DateTime hasta);
+        Task<Donacion?> GetByPaypalIdAsync(string transaccionPaypalId);
     }
 }

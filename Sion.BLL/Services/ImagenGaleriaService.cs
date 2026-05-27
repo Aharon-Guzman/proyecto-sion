@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
+using Microsoft.Extensions.Logging;
 
 
 namespace Sion.BLL.Services
@@ -21,18 +22,21 @@ namespace Sion.BLL.Services
     {
         private readonly IImagenGaleriaRepository _repository;
         private readonly ILogAuditoriaService _auditoria;
+        private readonly ILogger<ImagenGaleriaService> _logger;
         private readonly string _uploadsPath;
         private const int ThumbnailSize = 300;
 
         public ImagenGaleriaService(
             IImagenGaleriaRepository repository,
             ILogAuditoriaService auditoria,
-            IWebHostEnvironment env)
+            IWebHostEnvironment env,
+            ILogger<ImagenGaleriaService> logger)
         {
             _repository = repository;
             _auditoria = auditoria;
             _uploadsPath = Path.Combine(env.WebRootPath, "uploads", "galeria");
             Directory.CreateDirectory(_uploadsPath);
+            _logger = logger;
         }
 
         public async Task<IEnumerable<ImagenGaleriaViewModel>> GetAllAsync()
@@ -97,6 +101,7 @@ namespace Sion.BLL.Services
             };
 
             await _repository.AddAsync(entidad);
+            _logger.LogInformation("Imagen '{Titulo}' subida por {Usuario}", titulo, usuarioEmail);
             await _auditoria.RegistrarAsync("Subir", "ImagenGaleria", usuarioEmail, $"Imagen '{titulo}' subida");
         }
 
@@ -122,6 +127,7 @@ namespace Sion.BLL.Services
             EliminarArchivo(entidad.RutaThumbnail);
 
             await _repository.DeleteAsync(id);
+            _logger.LogInformation("Imagen '{Titulo}' eliminada por {Usuario}", entidad.Titulo, usuarioEmail);
             await _auditoria.RegistrarAsync("Eliminar", "ImagenGaleria", usuarioEmail, $"Imagen '{entidad.Titulo}' eliminada");
         }
 

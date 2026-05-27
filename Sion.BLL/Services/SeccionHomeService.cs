@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace Sion.BLL.Services
 {
@@ -16,16 +17,19 @@ namespace Sion.BLL.Services
         private readonly ISeccionHomeRepository _repository;
         private readonly ILogAuditoriaService _auditoria;
         private readonly IMemoryCache _cache;
+        private readonly ILogger<SeccionHomeService> _logger;
         private const string CacheKey = "secciones_activas";
 
         public SeccionHomeService(
             ISeccionHomeRepository repository,
             ILogAuditoriaService auditoria,
-            IMemoryCache cache)
+            IMemoryCache cache,
+            ILogger<SeccionHomeService> logger)
         {
             _repository = repository;
             _auditoria = auditoria;
             _cache = cache;
+            _logger = logger;
         }
 
         public async Task<IEnumerable<SeccionHomeViewModel>> GetAllAsync()
@@ -41,7 +45,7 @@ namespace Sion.BLL.Services
 
             var entidades = await _repository.GetActivasAsync();
             var viewModels = entidades.Select(MapToViewModel).ToList();
-
+            _logger.LogInformation("Cache miss - cargando secciones activas desde DB");
             _cache.Set(CacheKey, viewModels, TimeSpan.FromMinutes(30));
             return viewModels;
         }
@@ -66,6 +70,7 @@ namespace Sion.BLL.Services
             };
 
             await _repository.AddAsync(entidad);
+            _logger.LogInformation("Sección '{Titulo}' creada por {Usuario}", entidad.Titulo, usuarioEmail);
             _cache.Remove(CacheKey);
             await _auditoria.RegistrarAsync("Crear", "SeccionHome", usuarioEmail, $"Sección '{entidad.Titulo}' creada");
         }
@@ -94,6 +99,7 @@ namespace Sion.BLL.Services
             if (entidad == null) return;
 
             await _repository.DeleteAsync(id);
+            _logger.LogInformation("Sección '{Titulo}' eliminada por {Usuario}", entidad.Titulo, usuarioEmail);
             _cache.Remove(CacheKey);
             await _auditoria.RegistrarAsync("Eliminar", "SeccionHome", usuarioEmail, $"Sección '{entidad.Titulo}' eliminada");
         }

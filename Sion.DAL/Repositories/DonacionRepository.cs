@@ -17,5 +17,8 @@ namespace Sion.DAL.Repositories
 
         public async Task<IEnumerable<Donacion>> GetByFechasAsync(DateTime desde, DateTime hasta)
             => await _dbSet.Where(d => d.FechaRegistro >= desde && d.FechaRegistro <= hasta).ToListAsync();
+
+        public async Task<Donacion?> GetByPaypalIdAsync(string transaccionPaypalId)
+            => await _dbSet.FirstOrDefaultAsync(d => d.TransaccionPaypalId == transaccionPaypalId);
     }
 }
