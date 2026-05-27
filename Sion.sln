@@ -14,6 +14,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Elementos de la solución",
 		.gitignore = .gitignore
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sion.Tests", "Sion.Tests\Sion.Tests.csproj", "{F2DF383B-A53C-4A24-B1A7-72D195EE4135}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +34,10 @@ Global
 		{48005062-5C0E-47A1-B7D8-D9E30B029A1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{48005062-5C0E-47A1-B7D8-D9E30B029A1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{48005062-5C0E-47A1-B7D8-D9E30B029A1C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2DF383B-A53C-4A24-B1A7-72D195EE4135}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2DF383B-A53C-4A24-B1A7-72D195EE4135}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2DF383B-A53C-4A24-B1A7-72D195EE4135}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2DF383B-A53C-4A24-B1A7-72D195EE4135}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
