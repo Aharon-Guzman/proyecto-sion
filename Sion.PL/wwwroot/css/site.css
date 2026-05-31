@@ -19,7 +19,7 @@
     --sion-darkest:   #0A1C38;   /* Footer, CTA donaciones */
 
     /* Superficie */
-    --sion-light:     #F8F9FA;   /* Secciones alternas */
+    --sion-light:     #EEF2F7;   /* Secciones alternas */
 
     /* Bootstrap 5 overrides */
     --bs-primary:     #1B3F7A;
@@ -328,4 +328,289 @@ main { flex: 1; }
 :focus-visible {
     outline: 3px solid var(--sion-primary);
     outline-offset: 2px;
+}
+/* ============================================================
+   10. HERO — Index.cshtml
+   ============================================================ */
+.sion-hero {
+    background: linear-gradient(135deg, var(--sion-dark) 30%, var(--sion-dark2) 100%);
+    min-height: 88vh;
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+    /* Imagen decorativa semitransparente — lado derecho.*/
+    .sion-hero::after {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: 45%;
+        height: 100%;
+        background: url('/images/hero-bg.jpg') center / cover;
+        opacity: 0.2;
+        pointer-events: none;
+    }
+
+.sion-hero-content {
+    position: relative;
+    z-index: 2;
+    padding: 80px 0;
+}
+
+.sion-hero h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.25;
+    margin-bottom: 0;
+}
+
+.sion-hero p {
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 1.1rem;
+    margin: 1.2rem 0 2rem;
+    max-width: 520px;
+}
+
+.sion-hero-btns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+}
+
+@media (max-width: 991.98px) {
+    .sion-hero {
+        min-height: 70vh;
+    }
+
+        .sion-hero::after {
+            display: none;
+        }
+
+        .sion-hero h1 {
+            font-size: 2.2rem;
+        }
+
+    .sion-hero-content {
+        padding: 60px 0;
+    }
+}
+/* ============================================================
+   11. CTA DONACIÓN — Index.cshtml
+   ============================================================ */
+.sion-cta {
+    background: var(--sion-dark2);
+    padding: 80px 0;
+    text-align: center;
+}
+
+    .sion-cta h2 {
+        color: #fff;
+        font-size: 2.2rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+
+    .sion-cta p {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 1rem;
+        margin: 0 auto 2rem;
+        max-width: 560px;
+    }
+
+.sion-cta-montos {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+
+.sion-monto-btn {
+    background: transparent;
+    border: 2px solid var(--sion-primary);
+    color: var(--sion-primary);
+    border-radius: 25px;
+    padding: 10px 28px;
+    font-weight: 600;
+    font-size: 1rem;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+    .sion-monto-btn:hover,
+    .sion-monto-btn.active {
+        background: var(--sion-primary);
+        color: #fff;
+    }
+/* ============================================================
+   12. PAGE HERO — páginas internas (Nosotros, Galería, etc.)
+   ============================================================ */
+.sion-page-hero {
+    background: linear-gradient(135deg, var(--sion-dark) 60%, var(--sion-dark2) 100%);
+    padding: 70px 0 60px;
+    position: relative;
+    overflow: hidden;
+}
+
+    .sion-page-hero::after {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: 40%;
+        height: 100%;
+        background: url('/images/hero-bg.jpg') center / cover;
+        opacity: 0.12;
+        pointer-events: none;
+    }
+
+.sion-page-hero-content {
+    position: relative;
+    z-index: 2;
+}
+
+.sion-page-hero h1 {
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+.sion-page-hero p {
+    color: rgba(255, 255, 255, 0.65);
+    font-size: 1rem;
+    max-width: 500px;
+    margin-top: 10px;
+}
+
+
+/* ============================================================
+   13. MISIÓN / VISIÓN cards
+   ============================================================ */
+.sion-mv-card {
+    background: #fff;
+    border-radius: 14px;
+    border: 1px solid #e8e8e8;
+    padding: 32px 28px;
+    height: 100%;
+}
+
+.sion-mv-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    background: #EBF3FB;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 16px;
+}
+
+.sion-mv-card h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--sion-dark);
+    margin-bottom: 10px;
+}
+
+.sion-mv-card p {
+    font-size: 0.9rem;
+    color: #666;
+    line-height: 1.7;
+    margin: 0;
+}
+
+
+/* ============================================================
+   14. VALORES
+   ============================================================ */
+.sion-valor-item {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 28px;
+}
+
+.sion-valor-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    background: #EBF3FB;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+}
+
+.sion-valor-titulo {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--sion-dark);
+    margin-bottom: 4px;
+}
+
+.sion-valor-desc {
+    font-size: 0.875rem;
+    color: #666;
+    line-height: 1.6;
+    margin: 0;
+}
+
+
+/* ============================================================
+   15. EQUIPO / JUNTA DIRECTIVA
+   ============================================================ */
+.sion-equipo-card {
+    background: #fff;
+    border-radius: 14px;
+    border: 1px solid #e8e8e8;
+    padding: 28px 24px;
+    text-align: center;
+}
+
+.sion-equipo-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--sion-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--sion-dark); /* azul sobre dorado — WCAG AA */
+    margin: 0 auto 14px;
+}
+
+/* Variantes de color para los placeholders */
+.sion-avatar-alt1 {
+    background: var(--sion-secondary);
+    color: #fff;
+}
+
+.sion-avatar-alt2 {
+    background: var(--sion-dark2);
+    color: #fff;
+}
+
+.sion-avatar-alt3 {
+    background: var(--sion-dark);
+    color: #fff;
+}
+
+.sion-equipo-nombre {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--sion-dark);
+}
+
+.sion-equipo-cargo {
+    font-size: 0.8rem;
+    color: #999;
+    margin-top: 4px;
 }

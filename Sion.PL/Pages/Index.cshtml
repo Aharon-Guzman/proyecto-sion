@@ -1,10 +1,123 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Inicio";
+    ViewData["Description"] = "Asociación Sion — Transformando vidas en Concepción de Tres Ríos, Cartago, Costa Rica desde 2008.";
 }
+<!-- ========== HERO ========== -->
+<section class="sion-hero">
+    <div class="container">
+        <div class="col-lg-7 sion-hero-content">
+            <h1>@Model.HeroTitulo</h1>
+            <p>@Model.HeroSubtitulo</p>
+            <div class="sion-hero-btns">
+                <a href="quienes-somos" class="btn-sion-primary">Conoce a nuestro trabajo</a>
+                <a asp-asp-page="/Donaciones" class="btn-sion-outline">Donar ahora</a>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- ========== FIN HERO ========== -->
+<!-- ========== CONTADORES ========== -->
+<section class="sion-contadores" id="contadores">
+    <div class="container">
+        <div class="row text-center gy-4">
+            <div class="col-6 col-md-3">
+                <span class="sion-contador-numero" data-target="@Model.ContadorBeneficiados">0</span>
+                <span class="sion-contador-etiqueta">Personas beneficiadas</span>
+            </div>
+            <div class="col-6 col-md-3">
+                <span class="sion-contador-numero" data-target="@Model.ContadorDirectos">0</span>
+                <span class="sion-contador-etiqueta">Beneficiados directos</span>
+            </div>
+            <div class="col-6 col-md-3">
+                <span class="sion-contador-numero" data-target="@Model.ContadorProgramas">0</span>
+                <span class="sion-contador-etiqueta">Programas activos</span>
+            </div>
+            <div class="col-6 col-md-3">
+                <span class="sion-contador-numero" data-target="@Model.ContadorAnios" data-anios="true">0</span>
+                <span class="sion-contador-etiqueta">Años de trabajo</span>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- ========== FIN CONTADORES ========== -->
+<!-- ========== SECCIONES DINÁMICAS ========== -->
+@foreach (var seccion in Model.Secciones)
+{
+    var esAlterna = seccion.Orden % 2 == 0;
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+    <section class="sion-seccion @(esAlterna ? "sion-seccion-alt" : "")" id="seccion-@seccion.Id">
+        <div class="container">
+            <div class="row align-items-center g-5">
+
+                @if (seccion.Estilo == "ImagenIzquierda")
+                {
+                    <div class="col-lg-6 order-lg-1">
+                        <div class="sion-seccion-img">
+                            @if (!string.IsNullOrEmpty(seccion.RutaImagen))
+                            {
+                                <img src="@seccion.RutaImagen" alt="@seccion.Titulo"
+                                     class="img-fluid w-100 h-100 object-fit-cover" loading="lazy" />
+                            }
+                            else
+                            {
+                                <span>🤝</span>
+                            }
+                        </div>
+                    </div>
+                    <div class="col-lg-6 order-lg-2">
+                        <h2>@seccion.Titulo</h2>
+                        <p>@seccion.Descripcion</p>
+                    </div>
+                }
+                else if (seccion.Estilo == "TextoSolo")
+                {
+                    <div class="col-12 col-lg-8 mx-auto text-center">
+                        <h2>@seccion.Titulo</h2>
+                        <p>@seccion.Descripcion</p>
+                    </div>
+                }
+                else
+                {
+                    <div class="col-lg-6">
+                        <h2>@seccion.Titulo</h2>
+                        <p>@seccion.Descripcion</p>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="sion-seccion-img">
+                            @if (!string.IsNullOrEmpty(seccion.RutaImagen))
+                            {
+                                <img src="@seccion.RutaImagen" alt="@seccion.Titulo"
+                                     class="img-fluid w-100 h-100 object-fit-cover" loading="lazy" />
+                            }
+                            else
+                            {
+                                <span>⚽</span>
+                            }
+                        </div>
+                    </div>
+                }
+
+            </div>
+        </div>
+    </section>
+}
+<!-- ========== FIN SECCIONES DINÁMICAS ========== -->
+<!-- ========== CTA DONACIÓN ========== -->
+<section class="sion-cta" id="dona">
+    <div class="container text-center">
+        <h2>@Model.CtaTitulo</h2>
+        <p>@Model.CtaSubtitulo</p>
+        <div class="sion-cta-montos">
+            <button class="sion-monto-btn active" onclick="sionSeleccionarMonto(this)">$50</button>
+            <button class="sion-monto-btn" onclick="sionSeleccionarMonto(this)">$100</button>
+            <button class="sion-monto-btn" onclick="sionSeleccionarMonto(this)">$500</button>
+            <button class="sion-monto-btn" onclick="sionSeleccionarMonto(this)">Otro monto</button>
+        </div>
+        <a asp-page="/Donaciones" class="btn-sion-grande d-inline-block mt-4">
+            Donar con PayPal
+        </a>
+    </div>
+</section>
+<!-- ========== FIN CTA DONACIÓN ========== -->

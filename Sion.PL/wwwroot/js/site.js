@@ -34,5 +34,46 @@
             hamBtn.setAttribute('aria-expanded', 'false');
         });
     }
+    // ----------------------------------------------------------
+    // 3. Contadores animados — se activan al hacer scroll
+    // ----------------------------------------------------------
+    var contadores = document.querySelectorAll('.sion-contador-numero');
+    if (contadores.length > 0) {
+        var observer = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                    animarContador(entry.target);
+                }
+            });
+        }, { threshold: 0.3 });
 
+        contadores.forEach(function (el) {
+            observer.observe(el);
+        });
+    }
+    function animarContador(el) {
+        var target = parseInt(el.getAttribute('data-target'), 10);
+        var esAnios = el.getAttribute('data-anios') === 'true';
+        var duration = 2000;
+        var step = Math.ceil(target / (duration / 16));
+        var current = 0;
+
+        var timer = setInterval(function () {
+            current += step;
+            if (current >= target) {
+                current = target;
+                clearInterval(timer);
+            }
+            el.textContent = current.toLocaleString() + (esAnios ? '' : '+');
+        }, 16);
+    }
+    // ----------------------------------------------------------
+    // 4. CTA — selección de monto de donación
+    // ----------------------------------------------------------
+    window.sionSeleccionarMonto = function (btn) {
+        document.querySelectorAll('.sion-monto-btn').forEach(function (b) {
+            b.classList.remove('active');
+        });
+        btn.classList.add('active');
+    };
 })();
