@@ -342,15 +342,69 @@ main { flex: 1; }
 }
 
     /* Imagen decorativa semitransparente — lado derecho.*/
-    .sion-hero::after {
+/*    .sion-hero::after {
         content: '';
         position: absolute;
         right: 0;
         top: 0;
         width: 45%;
         height: 100%;
-        background: url('/images/hero-bg.jpg') center / cover;
+        background-image: var(--hero-bg, url('/images/hero-bg.jpeg'));
+        background-size: cover;
+        background-position: center;
         opacity: 0.2;
+        pointer-events: none;
+    }*/
+/*    .sion-hero::after {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url('/images/hero-bg.jpeg');
+        background-size: cover;
+        background-position: center top;
+        opacity: 0.15;
+        pointer-events: none;
+    }*/
+/*    .sion-hero::after {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-image: linear-gradient(to right, var(--sion-dark) 0%, transparent 40%), linear-gradient(to bottom, var(--sion-dark) 0%, transparent 30%), url('/images/hero-bg.jpeg');
+        background-size: cover;
+        background-position: center top;
+        opacity: 0.5;
+        pointer-events: none;
+    }*/
+/*    .sion-hero::after {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-image: linear-gradient(to right, var(--sion-dark) 40%, transparent 75%), linear-gradient(to bottom, transparent 50%, var(--sion-dark) 100%), url('/images/hero-bg.jpeg');
+        background-size: cover;
+        background-position: center top;
+        opacity: 0.55;
+        pointer-events: none;
+    }*/
+    .sion-hero::after {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: 55%;
+        height: 100%;
+        background-image: linear-gradient(to right, var(--sion-dark) 0%, transparent 90%), linear-gradient(to bottom, var(--sion-dark) 0%, transparent 30%), url('/images/hero-bg.jpeg');
+        background-size: cover;
+        background-position: center top;
+        opacity: 0.6;
         pointer-events: none;
     }
 
@@ -421,7 +475,9 @@ main { flex: 1; }
         margin: 0 auto 2rem;
         max-width: 560px;
     }
-
+.sion-cta-montos .sion-monto-btn {
+    text-decoration: none;
+}
 .sion-cta-montos {
     display: flex;
     flex-wrap: wrap;
@@ -614,3 +670,305 @@ main { flex: 1; }
     color: #999;
     margin-top: 4px;
 }
+
+/* ============================================================
+   16. GALERÍA
+   ============================================================ */
+.sion-galeria-thumb {
+    display: block;
+    border-radius: 12px;
+    overflow: hidden;
+    aspect-ratio: 4 / 3;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+    .sion-galeria-thumb:hover {
+        transform: scale(1.03);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+    }
+
+    .sion-galeria-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+/* ============================================================
+   17. GLIGHTBOX — personalización completa
+   ============================================================ */
+
+/* Fondo overlay */
+.goverlay {
+    background: rgba(5, 15, 30, 0.96) !important;
+}
+
+/* Caption */
+.gslide-description {
+    background: #F5A524 !important; 
+    backdrop-filter: blur(4px);
+    text-align: center !important;
+}
+
+.gslide-title {
+    font-family: 'Inter', 'Segoe UI', sans-serif !important;
+    font-size: 0.9rem !important;
+    font-weight: 600 !important;
+    color: rgba(10, 28, 56, 0.92) !important; 
+    margin: 0 !important;
+}
+
+.gslide-desc {
+    display: none !important;
+}
+
+/* Botones siguiente / anterior */
+.gbtn.gnext,
+.gbtn.gprev {
+    background: #F5A524 !important;
+    border-radius: 50% !important;
+    width: 48px !important;
+    height: 48px !important;
+    opacity: 1 !important;
+}
+
+    .gbtn.gnext:hover,
+    .gbtn.gprev:hover {
+        background: #C07A0F !important;
+    }
+
+    .gbtn.gnext svg path,
+    .gbtn.gprev svg path {
+        fill: #1B3F7A !important;
+    }
+
+/* Botón cerrar */
+.gbtn.gclose {
+    background: rgba(10, 28, 56, 0.85) !important;
+    border-radius: 50% !important;
+    opacity: 1 !important;
+}
+
+    .gbtn.gclose:hover {
+        background: #F5A524 !important;
+    }
+
+    .gbtn.gclose svg path {
+        fill: #fff !important;
+    }
+/* ============================================================
+   18. FORMULARIO DE CONTACTO
+   ============================================================ */
+.sion-form-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--sion-dark);
+    margin-bottom: 6px;
+    display: block;
+}
+
+.sion-form-control {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid #dde3ea;
+    border-radius: 10px;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    font-size: 0.95rem;
+    color: #222;
+    background: #fff;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    outline: none;
+}
+
+    .sion-form-control:focus {
+        border-color: var(--sion-primary);
+        box-shadow: 0 0 0 3px rgba(245, 165, 36, 0.15);
+    }
+
+    .sion-form-control.is-invalid {
+        border-color: #dc3545;
+    }
+
+.sion-form-error {
+    font-size: 0.8rem;
+    color: #dc3545;
+    margin-top: 4px;
+    display: block;
+}
+
+.sion-alerta-exito {
+    background: #d1f0d8;
+    border: 1px solid #a3d9b1;
+    color: #1a5c2a;
+    border-radius: 10px;
+    padding: 14px 18px;
+    font-size: 0.95rem;
+}
+
+/* ============================================================
+   19. INFO DE CONTACTO
+   ============================================================ */
+.sion-contacto-item {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 28px;
+    align-items: flex-start;
+}
+
+.sion-contacto-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    background: #EBF3FB;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+}
+
+.sion-contacto-titulo {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--sion-dark);
+    margin-bottom: 2px;
+}
+
+.sion-contacto-desc {
+    font-size: 0.9rem;
+    color: #555;
+    margin: 0;
+    line-height: 1.6;
+}
+
+    .sion-contacto-desc a {
+        color: var(--sion-secondary);
+        text-decoration: none;
+    }
+
+        .sion-contacto-desc a:hover {
+            color: var(--sion-primary);
+            text-decoration: underline;
+        }
+/* ============================================================
+   20. MAPA GOOGLE MAPS
+   ============================================================ */
+.sion-mapa {
+    border-radius: 14px;
+    overflow: hidden;
+    margin-top: 8px;
+}
+
+    .sion-mapa iframe {
+        width: 100%;
+        height: 260px;
+        border: 0;
+        display: block;
+    }
+/* ============================================================
+   21. DONACIONES
+   ============================================================ */
+.sion-dona-montos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.sion-dona-input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.sion-dona-prefix {
+    position: absolute;
+    left: 14px;
+    font-weight: 600;
+    color: #666;
+    font-size: 1rem;
+}
+
+.sion-dona-input {
+    padding-left: 28px !important;
+}
+
+.sion-dona-seguro {
+    font-size: 0.85rem;
+    color: #777;
+    margin-bottom: 12px;
+}
+
+.sion-dona-placeholder {
+    border: 2px dashed #dde3ea;
+    border-radius: 12px;
+    padding: 32px;
+    text-align: center;
+    color: #aaa;
+    font-size: 0.9rem;
+}
+
+.sion-dona-nota {
+    font-size: 0.85rem;
+    color: #777;
+}
+
+    .sion-dona-nota a {
+        color: var(--sion-secondary);
+        text-decoration: none;
+    }
+
+        .sion-dona-nota a:hover {
+            color: var(--sion-primary);
+        }
+
+/* Impacto */
+.sion-impacto-item {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    margin-bottom: 24px;
+}
+
+.sion-impacto-monto {
+    min-width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    background: var(--sion-primary);
+    color: var(--sion-dark);
+    font-weight: 800;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.sion-impacto-titulo {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--sion-dark);
+    margin-bottom: 2px;
+}
+
+.sion-impacto-desc {
+    font-size: 0.875rem;
+    color: #666;
+    margin: 0;
+    line-height: 1.6;
+}
+
+.sion-dona-confianza {
+    background: var(--sion-light);
+    border-radius: 12px;
+    padding: 20px 24px;
+}
+
+    .sion-dona-confianza p {
+        font-size: 0.875rem;
+        color: #555;
+        margin: 0 0 8px;
+    }
+
+        .sion-dona-confianza p:last-child {
+            margin-bottom: 0;
+        }

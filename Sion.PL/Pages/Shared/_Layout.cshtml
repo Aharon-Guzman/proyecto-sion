@@ -3,13 +3,36 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="@(ViewData["Description"] ?? "Asociación Sion — Transformando vidas en Tres Ríos, Costa Rica.")" />
-    <title>@(ViewData["Title"] != null ? ViewData["Title"] + " — Sion" : "Asociación Sion")</title>
+
+    <!-- SEO básico -->
+    <meta name="description" content="@(ViewData["Description"] ?? "Proyecto Sion — Transformando vidas en Concepción de Tres Ríos, Cartago, Costa Rica desde 2008.")" />
+    <meta name="robots" content="index, follow" />
+    <meta name="author" content="Proyecto Sion" />
+
+    <!-- Open Graph (WhatsApp, Facebook, LinkedIn) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Proyecto Sion" />
+    <meta property="og:title" content="@(ViewData["Title"] != null ? ViewData["Title"] + " — Sion" : "Proyecto Sion")" />
+    <meta property="og:description" content="@(ViewData["Description"] ?? "Proyecto Sion — Transformando vidas en Concepción de Tres Ríos, Cartago, Costa Rica desde 2008.")" />
+    <meta property="og:image" content="https://sioncr.org/images/og-image.jpg" />
+    <meta property="og:url" content="https://sioncr.org@(Context.Request.Path)" />
+    <meta property="og:locale" content="es_CR" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="@(ViewData["Title"] != null ? ViewData["Title"] + " — Sion" : "Proyecto Sion")" />
+    <meta name="twitter:description" content="@(ViewData["Description"] ?? "Proyecto Sion — Transformando vidas en Concepción de Tres Ríos, Cartago, Costa Rica desde 2008.")" />
+    <meta name="twitter:image" content="https://sioncr.org/images/og-image.jpg" />
+
+    <title>@(ViewData["Title"] != null ? ViewData["Title"] + " — Sion" : "Proyecto Sion")</title>
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="canonical" href="https://sioncr.org@(Context.Request.Path)" />
+
     @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
@@ -22,7 +45,7 @@
     <nav class="navbar navbar-expand-lg sticky-top sion-navbar" aria-label="Navegación principal">
         <div class="container">
 
-            <a class="navbar-brand sion-brand" asp-page="/Index" aria-label="Inicio — Asociación Sion">
+            <a class="navbar-brand sion-brand" asp-page="/Index" aria-label="Inicio — Proyecto Sion">
                 SION
             </a>
 
@@ -84,7 +107,7 @@
                 <a href="tel:+50600000000">+506 0000-0000</a>
             </p>
             <p class="sion-footer-copy">
-                &copy; @DateTime.Now.Year Asociación Sion &nbsp;&middot;&nbsp;
+                &copy; @DateTime.Now.Year Proyecto Sion &nbsp;&middot;&nbsp;
                 <a href="https://sioncr.org" target="_blank" rel="noopener">sioncr.org</a>
             </p>
         </div>

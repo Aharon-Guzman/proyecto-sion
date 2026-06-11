@@ -12,6 +12,7 @@ namespace Sion.PL.Pages
         private readonly ILogger<IndexModel> _logger;
         public string HeroTitulo { get; set; } = string.Empty;
         public string HeroSubtitulo { get; set; } = string.Empty;
+        public string HeroImagenFondo { get; set; } = "/images/hero-bg.jpg";
         public int ContadorBeneficiados { get; set; }
         public int ContadorDirectos { get; set; }
         public int ContadorAnios { get; set; }
@@ -37,6 +38,11 @@ namespace Sion.PL.Pages
             var programas = await _config.GetByClaveAsync("Contador:Programas");
             var ctaTitulo = await _config.GetByClaveAsync("CTA:Titulo");
             var ctaSubtitulo = await _config.GetByClaveAsync("CTA:Subtitulo");
+            var imagenFondo = await _config.GetByClaveAsync("Hero:ImagenFondo");
+
+            HeroImagenFondo = !string.IsNullOrEmpty(imagenFondo?.Valor)
+                ? imagenFondo.Valor
+                : "/images/hero-bg.jpeg";
 
             HeroTitulo = titulo?.Valor ?? "Transformando vidas en Tres Ríos desde 2008";
             HeroSubtitulo = subtitulo?.Valor ?? "Somos una organización cristiana comprometida con el desarrollo integral de familias vulnerables en Costa Rica.";

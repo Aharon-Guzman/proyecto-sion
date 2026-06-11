@@ -76,4 +76,5 @@
         });
         btn.classList.add('active');
     };
+
 })();

@@ -1,0 +1,111 @@
+﻿@page
+@model Sion.PL.Pages.DonacionesModel
+@{
+    ViewData["Title"] = "Donaciones";
+    ViewData["Description"] = "Tu donación transforma vidas en Concepción de Tres Ríos. Apoyá al Proyecto Sion hoy.";
+}
+
+<!-- PAGE HERO -->
+<section class="sion-page-hero">
+    <div class="container sion-page-hero-content">
+        <h1>Hacé una donación</h1>
+        <p>Tu aporte nos permite seguir transformando vidas en Concepción de Tres Ríos.</p>
+    </div>
+</section>
+
+<!-- DONACIÓN -->
+<section class="sion-seccion">
+    <div class="container">
+        <div class="row g-5 align-items-start">
+
+            <!-- PANEL DE DONACIÓN -->
+            <div class="col-lg-6">
+                <span class="sion-badge">Tu aporte importa</span>
+                <h2 class="mt-2 mb-4">Elegí un monto</h2>
+
+                <div class="sion-dona-montos">
+                    <button class="sion-monto-btn @(Model.Monto == 50 || Model.Monto == null ? "active" : "")"
+                            onclick="sionSeleccionarMonto(this)" data-monto="50">
+                        $50
+                    </button>
+                    <button class="sion-monto-btn @(Model.Monto == 100 ? "active" : "")"
+                            onclick="sionSeleccionarMonto(this)" data-monto="100">
+                        $100
+                    </button>
+                    <button class="sion-monto-btn @(Model.Monto == 500 ? "active" : "")"
+                            onclick="sionSeleccionarMonto(this)" data-monto="500">
+                        $500
+                    </button>
+                </div>
+
+                <div class="sion-dona-otro mt-3">
+                    <label class="sion-form-label">O ingresá otro monto (USD)</label>
+                    <div class="sion-dona-input-wrap">
+                        <span class="sion-dona-prefix">$</span>
+                        <input type="number" id="montoPersonalizado" class="sion-form-control sion-dona-input"
+                               placeholder="0.00" min="1" step="1" />
+                    </div>
+                </div>
+
+                <div class="sion-dona-paypal mt-4">
+                    <p class="sion-dona-seguro">🔒 Pago seguro procesado por PayPal</p>
+                    <!-- PayPal SDK — se integra en F-005.4 Sprint 5 -->
+                    <div id="paypal-button-container"></div>
+                    <div class="sion-dona-placeholder">
+                        <p>Integración PayPal próximamente</p>
+                    </div>
+                </div>
+
+                <p class="sion-dona-nota mt-3">
+                    También podés contactarnos a <a href="mailto:info@sioncr.org">info@sioncr.org</a>
+                    para coordinar una donación en otra modalidad.
+                </p>
+            </div>
+
+            <!-- IMPACTO -->
+            <div class="col-lg-6">
+                <span class="sion-badge">¿A dónde va tu donación?</span>
+                <h2 class="mt-2 mb-4">Tu impacto en números</h2>
+
+                <div class="sion-impacto-item">
+                    <div class="sion-impacto-monto">$10</div>
+                    <div>
+                        <div class="sion-impacto-titulo">Útiles escolares</div>
+                        <p class="sion-impacto-desc">Cubre los útiles escolares de un niño por un mes.</p>
+                    </div>
+                </div>
+
+                <div class="sion-impacto-item">
+                    <div class="sion-impacto-monto">$25</div>
+                    <div>
+                        <div class="sion-impacto-titulo">Alimentación</div>
+                        <p class="sion-impacto-desc">Brinda meriendas nutritivas a 5 niños durante una semana.</p>
+                    </div>
+                </div>
+
+                <div class="sion-impacto-item">
+                    <div class="sion-impacto-monto">$50</div>
+                    <div>
+                        <div class="sion-impacto-titulo">Taller educativo</div>
+                        <p class="sion-impacto-desc">Financia un taller completo de refuerzo escolar o deporte.</p>
+                    </div>
+                </div>
+
+                <div class="sion-impacto-item">
+                    <div class="sion-impacto-monto">$100</div>
+                    <div>
+                        <div class="sion-impacto-titulo">Apoyo familiar</div>
+                        <p class="sion-impacto-desc">Apoya a una familia vulnerable durante un mes completo.</p>
+                    </div>
+                </div>
+
+                <div class="sion-dona-confianza mt-4">
+                    <p>🏛️ Entidad legalmente constituida en Costa Rica</p>
+                    <p>📋 Transparencia total en el uso de recursos</p>
+                    <p>❤️ 17 años de servicio continuo a la comunidad</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>

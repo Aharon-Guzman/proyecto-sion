@@ -1,0 +1,122 @@
+﻿@page
+@model Sion.PL.Pages.ContactoModel
+@{
+    ViewData["Title"] = "Contacto";
+    ViewData["Description"] = "Contactá al Proyecto Sion. Estamos en Concepción de Tres Ríos, Cartago, Costa Rica.";
+}
+
+<!-- PAGE HERO -->
+<section class="sion-page-hero">
+    <div class="container sion-page-hero-content">
+        <h1>Contacto</h1>
+        <p>¿Tenés alguna consulta? Escribinos y te respondemos a la brevedad.</p>
+    </div>
+</section>
+
+<!-- CONTACTO -->
+<section class="sion-seccion">
+    <div class="container">
+        <div class="row g-5">
+
+            <!-- FORMULARIO -->
+            <div class="col-lg-7">
+                <span class="sion-badge">Escribinos</span>
+                <h2 class="mt-2 mb-4">Envianos un mensaje</h2>
+
+                @if (Model.MensajeEnviado)
+                {
+                    <div class="sion-alerta-exito mb-4">
+                        <strong>¡Mensaje enviado!</strong> Nos pondremos en contacto con vos pronto.
+                    </div>
+                }
+
+                <form method="post" novalidate>
+                    @Html.AntiForgeryToken()
+
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <label class="sion-form-label" asp-for="Input.Nombre">Nombre completo *</label>
+                            <input class="sion-form-control @(ViewData.ModelState["Input.Nombre"]?.Errors.Count > 0 ? "is-invalid" : "")"
+                                   asp-for="Input.Nombre"
+                                   placeholder="Tu nombre" />
+                            <span class="sion-form-error" asp-validation-for="Input.Nombre"></span>
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="sion-form-label" asp-for="Input.Email">Correo electrónico *</label>
+                            <input class="sion-form-control @(ViewData.ModelState["Input.Email"]?.Errors.Count > 0 ? "is-invalid" : "")"
+                                   asp-for="Input.Email"
+                                   placeholder="correo@ejemplo.com" />
+                            <span class="sion-form-error" asp-validation-for="Input.Email"></span>
+                        </div>
+                        <div class="col-12">
+                            <label class="sion-form-label" asp-for="Input.Telefono">Teléfono <span style="color:#aaa;font-weight:400">(opcional)</span></label>
+                            <input class="sion-form-control @(ViewData.ModelState["Input.Telefono"]?.Errors.Count > 0 ? "is-invalid" : "")"
+                                   asp-for="Input.Telefono"
+                                   placeholder="Ej: +506 8888-8888" />
+                            <span class="sion-form-error" asp-validation-for="Input.Telefono"></span>
+                        </div>
+                        <div class="col-12">
+                            <label class="sion-form-label" asp-for="Input.Mensaje">Mensaje *</label>
+                            <textarea class="sion-form-control @(ViewData.ModelState["Input.Mensaje"]?.Errors.Count > 0 ? "is-invalid" : "")"
+                                      asp-for="Input.Mensaje"
+                                      rows="5"
+                                      placeholder="Escribí tu consulta aquí..."></textarea>
+                            <span class="sion-form-error" asp-validation-for="Input.Mensaje"></span>
+                        </div>
+                        <div class="col-12 mt-2">
+                            <button type="submit" class="btn-sion-primary">Enviar mensaje</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- INFO DE CONTACTO -->
+            <div class="col-lg-5">
+                <span class="sion-badge">Dónde estamos</span>
+                <h2 class="mt-2 mb-4">Información de contacto</h2>
+
+                <div class="sion-contacto-item">
+                    <div class="sion-contacto-icon">📍</div>
+                    <div>
+                        <div class="sion-contacto-titulo">Dirección</div>
+                        <p class="sion-contacto-desc">Concepción de Tres Ríos, Cartago, Costa Rica</p>
+                    </div>
+                </div>
+
+                <div class="sion-contacto-item">
+                    <div class="sion-contacto-icon">📧</div>
+                    <div>
+                        <div class="sion-contacto-titulo">Correo</div>
+                        <p class="sion-contacto-desc">
+                            <a href="mailto:info@sioncr.org">info@sioncr.org</a>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="sion-contacto-item">
+                    <div class="sion-contacto-icon">📞</div>
+                    <div>
+                        <div class="sion-contacto-titulo">Teléfono</div>
+                        <p class="sion-contacto-desc">
+                            <a href="tel:+50600000000">+506 0000-0000</a>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="sion-contacto-item">
+                    <div class="sion-contacto-icon">🕐</div>
+                    <div>
+                        <div class="sion-contacto-titulo">Horario de atención</div>
+                        <p class="sion-contacto-desc">Lunes a viernes: 8:00 am – 5:00 pm</p>
+                    </div>
+                </div>
+                <div class="sion-mapa">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d491.2583064410236!2d-83.98733160039289!3d9.928423951670576!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8fa0e10018bbb8d9%3A0x6ac1b5c5f6342f76!2sProyecto%20Social%20Sion!5e0!3m2!1ses-419!2scr!4v1781151781978!5m2!1ses-419!2scr"
+                            allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>

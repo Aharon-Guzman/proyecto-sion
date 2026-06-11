@@ -5,14 +5,14 @@
     ViewData["Description"] = "Asociación Sion — Transformando vidas en Concepción de Tres Ríos, Cartago, Costa Rica desde 2008.";
 }
 <!-- ========== HERO ========== -->
-<section class="sion-hero">
+<section class="sion-hero" style="--hero-bg: url('@Model.HeroImagenFondo')">
     <div class="container">
         <div class="col-lg-7 sion-hero-content">
             <h1>@Model.HeroTitulo</h1>
             <p>@Model.HeroSubtitulo</p>
             <div class="sion-hero-btns">
-                <a href="quienes-somos" class="btn-sion-primary">Conoce a nuestro trabajo</a>
-                <a asp-asp-page="/Donaciones" class="btn-sion-outline">Donar ahora</a>
+                <a asp-page="/Nosotros" class="btn-sion-primary">Conoce a nuestro trabajo</a>
+                <a asp-page="/Donaciones" class="btn-sion-outline">Donar ahora</a>
             </div>
         </div>
     </div>
@@ -110,10 +110,10 @@
         <h2>@Model.CtaTitulo</h2>
         <p>@Model.CtaSubtitulo</p>
         <div class="sion-cta-montos">
-            <button class="sion-monto-btn active" onclick="sionSeleccionarMonto(this)">$50</button>
-            <button class="sion-monto-btn" onclick="sionSeleccionarMonto(this)">$100</button>
-            <button class="sion-monto-btn" onclick="sionSeleccionarMonto(this)">$500</button>
-            <button class="sion-monto-btn" onclick="sionSeleccionarMonto(this)">Otro monto</button>
+            <a href="/Donaciones?monto=50" class="sion-monto-btn active">$50</a>
+            <a href="/Donaciones?monto=100" class="sion-monto-btn">$100</a>
+            <a href="/Donaciones?monto=500" class="sion-monto-btn">$500</a>
+            <a href="/Donaciones" class="sion-monto-btn">Otro monto</a>
         </div>
         <a asp-page="/Donaciones" class="btn-sion-grande d-inline-block mt-4">
             Donar con PayPal
