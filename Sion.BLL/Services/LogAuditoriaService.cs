@@ -1,11 +1,7 @@
 ﻿using Sion.BLL.Interfaces;
+using Sion.BLL.ViewModels;
 using Sion.DAL.Entities;
 using Sion.DAL.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Sion.BLL.Services
 {
@@ -30,6 +26,19 @@ namespace Sion.BLL.Services
             };
 
             await _repository.AddAsync(log);
+        }
+        public async Task<IEnumerable<LogAuditoriaViewModel>> GetAllAsync()
+        {
+            var entidades = await _repository.GetAllAsync();
+            return entidades.Select(e => new LogAuditoriaViewModel
+            {
+                Id = e.Id,
+                Accion = e.Accion,
+                Entidad = e.EntidadAfectada,
+                UsuarioEmail = e.UsuarioEmail,
+                Detalle = e.Detalle,
+                FechaHora = e.FechaHora
+            });
         }
     }
 }

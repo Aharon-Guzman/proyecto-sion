@@ -9,5 +9,6 @@ namespace Sion.BLL.Interfaces
     public interface ICorreoService
     {
         Task EnviarContactoAsync(string nombre, string email, string? telefono, string mensaje);
+        Task EnviarResetPasswordAsync(string emailDestino, string linkReset);
     }
 }

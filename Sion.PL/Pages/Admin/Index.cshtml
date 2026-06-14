@@ -1,0 +1,101 @@
+@page
+@model Sion.PL.Pages.Admin.IndexModel
+@{
+    ViewData["Title"] = "Dashboard";
+    ViewData["TopbarSub"] = $"Bienvenido, {User.Identity?.Name?.Split('@')[0]} · {DateTime.Now:dddd d MMMM yyyy}";
+    ViewData["ActivePage"] = "Dashboard";
+}
+
+<!-- STAT CARDS -->
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="sion-admin-stat-card">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="sion-admin-stat-label">Donaciones este mes</div>
+                    <div class="sion-admin-stat-value">$@Model.MontoMes.ToString("N0")</div>
+                    <div class="sion-admin-stat-sub">@Model.TotalDonacionesMes donaciones</div>
+                </div>
+                <div class="sion-admin-stat-icon" style="background:#EBF3FB">💰</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="sion-admin-stat-card">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="sion-admin-stat-label">Imágenes en galería</div>
+                    <div class="sion-admin-stat-value">@Model.TotalImagenes</div>
+                    <div class="sion-admin-stat-sub">activas</div>
+                </div>
+                <div class="sion-admin-stat-icon" style="background:#EBF3FB">📷</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="sion-admin-stat-card">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="sion-admin-stat-label">Secciones activas</div>
+                    <div class="sion-admin-stat-value">@Model.TotalSecciones</div>
+                    <div class="sion-admin-stat-sub">en página de inicio</div>
+                </div>
+                <div class="sion-admin-stat-icon" style="background:#e8eef8">🖼️</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="sion-admin-stat-card">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="sion-admin-stat-label">Total donaciones</div>
+                    <div class="sion-admin-stat-value">$@Model.MontoTotal.ToString("N0")</div>
+                    <div class="sion-admin-stat-sub">histórico</div>
+                </div>
+                <div class="sion-admin-stat-icon" style="background:#f0e8f8">📈</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- TABLA ÚLTIMAS DONACIONES -->
+<div class="sion-admin-card">
+    <div class="sion-admin-card-header">
+        <span class="sion-admin-card-title">Últimas donaciones</span>
+        <a asp-page="/Admin/Donaciones/Index" class="sion-admin-btn">Ver todas</a>
+    </div>
+    @if (Model.UltimasDonaciones.Any())
+    {
+        <table class="sion-admin-table">
+            <thead>
+                <tr>
+                    <th>Donante</th>
+                    <th>Monto</th>
+                    <th>Fecha</th>
+                    <th>Tipo</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var d in Model.UltimasDonaciones)
+                {
+                    <tr>
+                        <td>@(string.IsNullOrEmpty(d.NombreDonante) ? "Anónimo" : d.NombreDonante)</td>
+                        <td><strong>$@d.Monto.ToString("N0")</strong></td>
+                        <td>@d.FechaRegistro.ToString("dd MMM yyyy")</td>
+                        <td>@(d.EsRecurrente ? "Mensual" : "Única")</td>
+                        <td>
+                            <span class="sion-admin-badge sion-admin-badge-@d.Estado.ToLower()">
+                                @d.Estado
+                            </span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div class="sion-admin-empty">No hay donaciones registradas aún.</div>
+    }
+</div>

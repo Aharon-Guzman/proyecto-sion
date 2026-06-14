@@ -58,5 +58,44 @@ namespace Sion.BLL.Services
 
             _logger.LogInformation("Correo de contacto enviado de {Email}", email);
         }
+        public async Task EnviarResetPasswordAsync(string emailDestino, string linkReset)
+        {
+            var host = _config["Smtp:Host"]!;
+            var puerto = int.Parse(_config["Smtp:Puerto"]!);
+            var usuario = _config["Smtp:Usuario"]!;
+            var contrasena = _config["Smtp:Contrasena"]!;
+            var remitente = _config["Smtp:NombreRemitente"]!;
+
+            var cuerpo = $"""
+        Restablecimiento de contraseña — Proyecto Sion
+
+        Recibimos una solicitud para restablecer la contraseña del panel administrativo.
+
+        Hacé clic en el siguiente enlace para continuar (válido por 24 horas):
+
+        {linkReset}
+
+        Si no solicitaste este cambio, ignorá este correo.
+        """;
+
+            using var smtp = new SmtpClient(host, puerto)
+            {
+                Credentials = new NetworkCredential(usuario, contrasena),
+                EnableSsl = true
+            };
+
+            var correo = new MailMessage
+            {
+                From = new MailAddress(usuario, remitente),
+                Subject = "Restablecer contraseña — Panel Sion",
+                Body = cuerpo,
+                IsBodyHtml = false
+            };
+
+            correo.To.Add(emailDestino);
+
+            await smtp.SendMailAsync(correo);
+            _logger.LogInformation("Correo de reset enviado a {Email}", emailDestino);
+        }
     }
 }

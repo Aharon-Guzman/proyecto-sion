@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Admin — @ViewData["Title"] | Proyecto Sion</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body class="sion-admin-body">
+
+    <!-- SIDEBAR -->
+    <nav class="sion-admin-sidebar" id="adminSidebar">
+        <div class="sion-admin-brand">
+            SION
+            <span>Panel Administrativo</span>
+        </div>
+
+        <div class="sion-admin-menu">
+            <div class="sion-admin-menu-label">General</div>
+            <a asp-page="/Admin/Index"
+               class="sion-admin-menu-item @(ViewData["ActivePage"]?.ToString() == "Dashboard" ? "active" : "")">
+                <span class="sion-admin-menu-icon">📊</span> Dashboard
+            </a>
+
+            <div class="sion-admin-menu-label">Contenido</div>
+            <a asp-page="/Admin/Secciones/Index"
+               class="sion-admin-menu-item @(ViewData["ActivePage"]?.ToString() == "Secciones" ? "active" : "")">
+                <span class="sion-admin-menu-icon">🖼️</span> Secciones Home
+            </a>
+            <a asp-page="/Admin/Galeria/Index"
+               class="sion-admin-menu-item @(ViewData["ActivePage"]?.ToString() == "Galeria" ? "active" : "")">
+                <span class="sion-admin-menu-icon">📷</span> Galería
+            </a>
+            <a asp-page="/Admin/Configuracion/Index"
+               class="sion-admin-menu-item @(ViewData["ActivePage"]?.ToString() == "Configuracion" ? "active" : "")">
+                <span class="sion-admin-menu-icon">⚙️</span> Contenido fijo
+            </a>
+
+            <div class="sion-admin-menu-label">Finanzas</div>
+            <a asp-page="/Admin/Donaciones/Index"
+               class="sion-admin-menu-item @(ViewData["ActivePage"]?.ToString() == "Donaciones" ? "active" : "")">
+                <span class="sion-admin-menu-icon">💳</span> Donaciones
+            </a>
+
+            <div class="sion-admin-menu-label">Sistema</div>
+            <a asp-page="/Admin/Logs/Index"
+               class="sion-admin-menu-item @(ViewData["ActivePage"]?.ToString() == "Logs" ? "active" : "")">
+                <span class="sion-admin-menu-icon">📋</span> Logs Auditoría
+            </a>
+        </div>
+
+        <!-- USUARIO AL FONDO -->
+        <div class="sion-admin-sidebar-user">
+            <div class="sion-admin-avatar">
+                @{ var nombre = User.Identity?.Name ?? ""; }
+                @(nombre.Length >= 2 ? nombre.Substring(0, 2).ToUpper() : "AD")
+            </div>
+            <div class="sion-admin-user-info">
+                <div class="sion-admin-user-name">@(User.Identity?.Name ?? "Admin")</div>
+                <div class="sion-admin-user-role">Administrador</div>
+            </div>
+            <form method="post" asp-page="/Admin/Account/Logout">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="sion-admin-logout-btn" title="Cerrar sesión">↩</button>
+            </form>
+        </div>
+    </nav>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <div class="sion-admin-main">
+        <header class="sion-admin-topbar">
+            <button class="sion-admin-toggle d-lg-none"
+                    onclick="document.getElementById('adminSidebar').classList.toggle('open')">
+                ☰
+            </button>
+            <div>
+                <div class="sion-admin-topbar-title">@ViewData["Title"]</div>
+                @if (ViewData["TopbarSub"] != null)
+                {
+                    <div class="sion-admin-topbar-sub">@ViewData["TopbarSub"]</div>
+                }
+            </div>
+            <div class="ms-auto">
+                @await RenderSectionAsync("TopbarAction", required: false)
+                @if (!IsSectionDefined("TopbarAction"))
+                {
+                    <a href="/" target="_blank" class="sion-admin-ver-sitio">Ver sitio público ↗</a>
+                }
+            </div>
+        </header>
+
+        <main class="sion-admin-content">
+            @RenderBody()
+        </main>
+    </div>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

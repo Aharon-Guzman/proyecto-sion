@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Sion.DAL.Data.Seeders
@@ -14,15 +10,15 @@ namespace Sion.DAL.Data.Seeders
         {
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
+            var config = serviceProvider.GetRequiredService<IConfiguration>();
 
-            //Crear rol admin si no existe
+            // Crear rol Admin si no existe
             if (!await roleManager.RoleExistsAsync("Admin"))
-            {
                 await roleManager.CreateAsync(new IdentityRole("Admin"));
-            }
-            //Crear usuario admin si no existe
-            const string adminEmail = "mauro.vega@sion.org";
-            const string adminPassword = "Sion2026!";
+
+            // Leer credenciales desde User Secrets (dev) o env vars (prod)
+            var adminEmail = config["AdminSeed:Email"] ?? "admin@sioncr.org";
+            var adminPassword = config["AdminSeed:Password"] ?? throw new InvalidOperationException("AdminSeed:Password no configurado en User Secrets.");
 
             var adminUser = await userManager.FindByEmailAsync(adminEmail);
             if (adminUser == null)
@@ -34,9 +30,9 @@ namespace Sion.DAL.Data.Seeders
                     EmailConfirmed = true
                 };
 
-                await userManager.CreateAsync(adminUser, adminPassword);
-                await userManager.AddToRoleAsync(adminUser, "Admin");
- 
+                var result = await userManager.CreateAsync(adminUser, adminPassword);
+                if (result.Succeeded)
+                    await userManager.AddToRoleAsync(adminUser, "Admin");
             }
         }
     }
