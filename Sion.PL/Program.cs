@@ -22,24 +22,28 @@ builder.Services.AddDbContext<SionDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("SionDb")));
 
 // Repositorios DAL (se agregan en EPIC-003)
- builder.Services.AddScoped<ISeccionHomeRepository, SeccionHomeRepository>();
- builder.Services.AddScoped<IImagenGaleriaRepository, ImagenGaleriaRepository>();
- builder.Services.AddScoped<IDonacionRepository, DonacionRepository>();
- builder.Services.AddScoped<IConfiguracionSitioRepository, ConfiguracionSitioRepository>();
- builder.Services.AddScoped<ILogAuditoriaRepository, LogAuditoriaRepository>();
+builder.Services.AddScoped<ISeccionHomeRepository, SeccionHomeRepository>();
+builder.Services.AddScoped<IImagenGaleriaRepository, ImagenGaleriaRepository>();
+builder.Services.AddScoped<IDonacionRepository, DonacionRepository>();
+builder.Services.AddScoped<IConfiguracionSitioRepository, ConfiguracionSitioRepository>();
+builder.Services.AddScoped<ILogAuditoriaRepository, LogAuditoriaRepository>();
 
 //  Servicios BLL (se agregan en EPIC-003) 
- builder.Services.AddScoped<ISeccionHomeService, SeccionHomeService>();
- builder.Services.AddScoped<IImagenGaleriaService, ImagenGaleriaService>();
- builder.Services.AddScoped<IDonacionService, DonacionService>();
- builder.Services.AddScoped<IConfiguracionSitioService, ConfiguracionSitioService>();
- builder.Services.AddScoped<ILogAuditoriaService, LogAuditoriaService>();
- builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+builder.Services.AddScoped<ISeccionHomeService, SeccionHomeService>();
+builder.Services.AddScoped<IImagenGaleriaService, ImagenGaleriaService>();
+builder.Services.AddScoped<IDonacionService, DonacionService>();
+builder.Services.AddScoped<IConfiguracionSitioService, ConfiguracionSitioService>();
+builder.Services.AddScoped<ILogAuditoriaService, LogAuditoriaService>();
+builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+
+// Servicio de correo
+builder.Services.AddScoped<ICorreoService, CorreoService>();
+builder.Services.AddHttpClient();
 
 // Identity
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
-    .AddEntityFrameworkStores<SionDbContext>()
-    .AddDefaultTokenProviders();
+   .AddEntityFrameworkStores<SionDbContext>()
+   .AddDefaultTokenProviders();
 
 //Servicio de cache en memoria
 builder.Services.AddMemoryCache();

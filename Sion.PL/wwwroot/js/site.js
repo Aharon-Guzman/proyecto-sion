@@ -76,5 +76,15 @@
         });
         btn.classList.add('active');
     };
-
+    // ----------------------------------------------------------
+    // 5. Banner de notificación — se oculta solo a los 5 segundos
+    // ----------------------------------------------------------
+    var banner = document.getElementById('sionBanner');
+    if (banner) {
+        setTimeout(function () {
+            banner.style.transition = 'opacity 0.5s ease';
+            banner.style.opacity = '0';
+            setTimeout(function () { banner.style.display = 'none'; }, 500);
+        }, 5000);
+    }
 })();
