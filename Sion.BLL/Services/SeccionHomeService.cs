@@ -84,7 +84,7 @@ namespace Sion.BLL.Services
             entidad.Descripcion = viewModel.Descripcion;
             entidad.RutaImagen = viewModel.RutaImagen;
             entidad.Estilo = viewModel.Estilo;
-            entidad.Orden = viewModel.Orden;
+            // Orden NO se toca aquí — solo ReordenarAsync lo mueve
             entidad.EstaActiva = viewModel.EstaActiva;
             entidad.FechaModificacion = DateTime.UtcNow;
 
@@ -115,6 +115,24 @@ namespace Sion.BLL.Services
             await _repository.UpdateAsync(entidad);
             _cache.Remove(CacheKey);
             await _auditoria.RegistrarAsync("Toggle", "SeccionHome", usuarioEmail, $"Sección '{entidad.Titulo}' → activa: {entidad.EstaActiva}");
+        }
+
+        public async Task ReordenarAsync(List<int> ids, string usuarioEmail)
+        {
+            for (int i = 0; i < ids.Count; i++)
+            {
+                var entidad = await _repository.GetByIdAsync(ids[i]);
+                if (entidad == null) continue;
+
+                entidad.Orden             = i + 1;
+                entidad.FechaModificacion = DateTime.UtcNow;
+                await _repository.UpdateAsync(entidad);
+            }
+
+            _cache.Remove(CacheKey);
+            _logger.LogInformation("Secciones reordenadas por {Usuario}", usuarioEmail);
+            await _auditoria.RegistrarAsync("Reordenar", "SeccionHome", usuarioEmail,
+                $"Orden actualizado: [{string.Join(", ", ids)}]");
         }
 
         private static SeccionHomeViewModel MapToViewModel(SeccionHome e) => new()

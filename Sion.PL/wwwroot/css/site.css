@@ -1,6 +1,6 @@
 /* =========================================
    PALETA OFICIAL PROYECTO SION
-   Origen: logo oficial de la ONG
+   Origen: logo oficial de la ORG
    Aprobada: 16 mayo 2026
    ========================================= */
 
@@ -298,6 +298,12 @@ main {
     background: #EBF3FB;
     font-size: 5rem;
 }
+
+    .sion-seccion-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
 
 
 /* ============================================================
@@ -1392,4 +1398,532 @@ main {
     .sion-admin-sidebar { transform: translateX(-100%); }
     .sion-admin-sidebar.open { transform: translateX(0); }
     .sion-admin-main { margin-left: 0; }
+}
+/* TABLA ADMIN GENÉRICA */
+.sion-admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+
+.sion-admin-table thead th {
+    padding: 10px 16px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #999;
+    border-bottom: 1px solid #f0f0f0;
+    background: #fafafa;
+}
+
+.sion-admin-table tbody tr {
+    border-bottom: 1px solid #f5f5f5;
+    transition: background 0.15s;
+}
+
+.sion-admin-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.sion-admin-table tbody tr:hover {
+    background: #fafafa;
+}
+
+.sion-admin-table tbody td {
+    padding: 12px 16px;
+    vertical-align: middle;
+}
+
+.sion-table-row-inactive {
+    opacity: 0.5;
+}
+
+.sion-table-text {
+    font-size: 0.875rem;
+    color: var(--sion-dark);
+    font-weight: 500;
+}
+
+.sion-table-hint {
+    font-size: 0.78rem;
+    color: #999;
+}
+
+/* THUMBNAIL GALERÍA ADMIN */
+.galeria-admin-thumb {
+    width: 54px;
+    height: 54px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--sion-light);
+    flex-shrink: 0;
+}
+
+.galeria-admin-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* LOGS AUDITORÍA */
+.logs-filter-bar {
+    padding: 12px 20px 0;
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 16px;
+}
+
+.logs-filter-form {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+    .logs-filter-form .sion-form-label {
+        white-space: nowrap;
+        font-size: 0.82rem;
+        color: #555;
+        margin: 0;
+    }
+
+    .logs-filter-form .sion-form-control {
+        max-width: 160px;
+        margin-bottom: 0;
+    }
+
+.logs-search-bar {
+    padding: 12px 20px 0;
+}
+
+    .logs-search-bar .sion-form-control {
+        max-width: 380px;
+        margin-bottom: 0;
+    }
+
+.logs-table-wrap {
+    overflow-x: auto;
+}
+
+.log-fecha {
+    display: block;
+}
+
+.log-hora {
+    font-size: 0.78rem;
+    color: #aaa;
+    display: block;
+}
+
+.log-email {
+    font-size: 0.8rem;
+    word-break: break-all;
+}
+
+.log-detalle {
+    font-size: 0.82rem;
+    color: #444;
+}
+
+/* Badges de acción */
+.log-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.log-badge-danger  { background: #fdecea; color: #c0392b; }
+.log-badge-success { background: #eaf7ef; color: #1e8449; }
+.log-badge-info    { background: #ebf3fb; color: #1B3F7A; }
+.log-badge-default { background: #f4f4f4; color: #666; }
+
+.logs-count-footer {
+    padding: 10px 20px;
+    font-size: 0.8rem;
+    color: #999;
+    border-top: 1px solid #f0f0f0;
+}
+
+/* GALERÍA ADMIN — BÚSQUEDA Y PAGINACIÓN */
+.galeria-search-bar {
+    padding: 12px 20px 0;
+}
+
+.galeria-search-form {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+    .galeria-search-form .sion-form-control {
+        max-width: 320px;
+        margin-bottom: 0;
+    }
+
+.galeria-paginacion {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 16px 20px 12px;
+    flex-wrap: wrap;
+}
+
+.pag-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 34px;
+    padding: 0 10px;
+    border-radius: 6px;
+    border: 1px solid #d0d7e3;
+    background: #fff;
+    color: var(--sion-dark);
+    font-size: 0.83rem;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+}
+
+    .pag-btn:hover:not(.disabled):not(.active) {
+        background: var(--sion-light);
+        border-color: var(--sion-secondary);
+        color: var(--sion-dark);
+    }
+
+    .pag-btn.active {
+        background: var(--sion-dark);
+        border-color: var(--sion-dark);
+        color: #fff;
+        cursor: default;
+    }
+
+    .pag-btn.disabled {
+        color: #b0b8c9;
+        cursor: not-allowed;
+        background: #f7f9fc;
+    }
+
+.pag-ellipsis {
+    padding: 0 4px;
+    color: #999;
+    font-size: 0.85rem;
+    line-height: 34px;
+}
+
+.pag-info {
+    margin-left: auto;
+    font-size: 0.8rem;
+    color: #888;
+}
+
+/* SECCIONES CRUD */
+.seccion-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 20px;
+    border-bottom: 1px solid #f0f0f0;
+    transition: opacity 0.2s;
+}
+
+    .seccion-row:last-child {
+        border-bottom: none;
+    }
+
+    .seccion-row:hover {
+        background: #fafafa;
+    }
+
+    .seccion-row.inactiva {
+        opacity: 0.5;
+    }
+
+.seccion-orden {
+    font-size: 0.72rem;
+    color: #bbb;
+    min-width: 24px;
+    text-align: center;
+}
+
+.drag-handle {
+    cursor: grab;
+}
+
+.drag-handle:active {
+    cursor: grabbing;
+}
+
+.seccion-row-ghost {
+    opacity: 0.4;
+    background: #EBF3FB;
+}
+
+.seccion-thumb {
+    width: 54px;
+    height: 54px;
+    border-radius: 8px;
+    background: var(--sion-light);
+    overflow: hidden;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    color: #aaa;
+}
+
+    .seccion-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+.seccion-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.seccion-titulo {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--sion-dark);
+}
+
+.seccion-desc {
+    font-size: 0.75rem;
+    color: #888;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 280px;
+}
+
+.badge-estilo {
+    display: inline-block;
+    font-size: 0.68rem;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-weight: 500;
+    margin-top: 4px;
+}
+
+.badge-img-der {
+    background: #e8eef8;
+    color: #1a4a8a;
+}
+
+.badge-img-izq {
+    background: #e8f4e8;
+    color: #1a6a2a;
+}
+
+.badge-txt-solo {
+    background: #f5f0ff;
+    color: #5a2d9a;
+}
+
+.btn-sion-row-edit {
+    background: none;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 5px 12px;
+    font-size: 0.75rem;
+    color: #555;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+    .btn-sion-row-edit:hover {
+        border-color: var(--sion-primary);
+        color: var(--sion-primary);
+    }
+
+.btn-sion-row-del {
+    background: none;
+    border: 1px solid #fce8e6;
+    border-radius: 6px;
+    padding: 5px 10px;
+    font-size: 0.75rem;
+    color: #c0392b;
+    cursor: pointer;
+}
+
+    .btn-sion-row-del:hover {
+        background: #fce8e6;
+    }
+
+/* TOAST */
+.sion-toast {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    background: #fff;
+    border-radius: 10px;
+    padding: 14px 18px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.14);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.87rem;
+    color: #222;
+    max-width: 340px;
+    border-left: 4px solid #ccc;
+    transition: opacity 0.3s, transform 0.3s;
+    animation: toastEntrada 0.3s ease;
+}
+
+.sion-toast.exito { border-left-color: #2d7a3a; }
+.sion-toast.error { border-left-color: #c0392b; }
+
+.sion-toast-icon {
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.sion-toast.exito .sion-toast-icon { color: #2d7a3a; }
+.sion-toast.error .sion-toast-icon { color: #c0392b; }
+
+.sion-toast-close {
+    background: none;
+    border: none;
+    color: #aaa;
+    cursor: pointer;
+    font-size: 0.75rem;
+    margin-left: auto;
+    padding: 0 2px;
+}
+
+.sion-toast-close:hover { color: #555; }
+
+@keyframes toastEntrada {
+    from { opacity: 0; transform: translateX(20px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+/* MODAL */
+.sion-modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+}
+
+    .sion-modal-overlay.show {
+        display: flex;
+    }
+
+.sion-modal-box {
+    background: #fff;
+    border-radius: 14px;
+    padding: 28px;
+    width: 480px;
+    max-width: 95vw;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.sion-modal-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--sion-dark);
+    margin-bottom: 20px;
+}
+
+.sion-modal-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid #eee;
+}
+
+.estilo-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    margin-top: 4px;
+}
+
+.estilo-option {
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 10px 8px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 0.72rem;
+    color: #555;
+    transition: all 0.15s;
+}
+
+    .estilo-option.selected {
+        border-color: var(--sion-primary);
+        color: var(--sion-primary);
+        background: #FEF4E0;
+    }
+
+.estilo-icon {
+    font-size: 1.3rem;
+    display: block;
+    margin-bottom: 4px;
+}
+
+/* reutilizados del login */
+.sion-admin-empty {
+    text-align: center;
+    padding: 40px;
+    color: var(--sion-muted);
+}
+
+.sion-imagen-preview {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+    .sion-imagen-preview img {
+        width: 80px;
+        height: 54px;
+        object-fit: cover;
+        border-radius: 6px;
+        border: 1px solid #ddd;
+    }
+
+.sion-imagen-hint {
+    font-size: 0.75rem;
+    color: var(--sion-muted);
+}
+
+.sion-form-hint {
+    font-size: 0.75rem;
+    color: var(--sion-muted);
+    display: block;
+    margin-top: 4px;
+}
+
+.sion-card-header {
+    padding: 14px 20px;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.sion-card-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--sion-dark);
+}
+
+.sion-card-hint {
+    font-size: 0.72rem;
+    color: #aaa;
 }

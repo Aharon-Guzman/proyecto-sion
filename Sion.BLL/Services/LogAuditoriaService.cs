@@ -30,15 +30,23 @@ namespace Sion.BLL.Services
         public async Task<IEnumerable<LogAuditoriaViewModel>> GetAllAsync()
         {
             var entidades = await _repository.GetAllAsync();
-            return entidades.Select(e => new LogAuditoriaViewModel
-            {
-                Id = e.Id,
-                Accion = e.Accion,
-                Entidad = e.EntidadAfectada,
-                UsuarioEmail = e.UsuarioEmail,
-                Detalle = e.Detalle,
-                FechaHora = e.FechaHora
-            });
+            return entidades.Select(MapToViewModel);
         }
+
+        public async Task<IEnumerable<LogAuditoriaViewModel>> GetByFechasAsync(DateTime desde, DateTime hasta)
+        {
+            var entidades = await _repository.GetByFechasAsync(desde, hasta);
+            return entidades.Select(MapToViewModel);
+        }
+
+        private static LogAuditoriaViewModel MapToViewModel(DAL.Entities.LogAuditoria e) => new()
+        {
+            Id           = e.Id,
+            Accion       = e.Accion,
+            Entidad      = e.EntidadAfectada,
+            UsuarioEmail = e.UsuarioEmail,
+            Detalle      = e.Detalle,
+            FechaHora    = e.FechaHora
+        };
     }
 }

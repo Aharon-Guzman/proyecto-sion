@@ -1,0 +1,327 @@
+﻿@page
+@model Sion.PL.Pages.Admin.Secciones.IndexModel
+@{
+    ViewData["Title"] = "Secciones Home";
+    ViewData["ActivePage"] = "Secciones";
+}
+
+@if (Model.ToastMensaje != null)
+{
+    <div class="sion-toast @(Model.ToastTipo == "ok" ? "exito" : "error")" id="sionToast">
+        <span class="sion-toast-icon">@(Model.ToastTipo == "ok" ? "✓" : "✕")</span>
+        <span>@Model.ToastMensaje</span>
+        <button onclick="this.parentElement.remove()" class="sion-toast-close">✕</button>
+    </div>
+}
+
+@section TopbarAction {
+    <button class="sion-admin-btn primary" onclick="abrirModalNueva()">+ Nueva sección</button>
+}
+
+<div class="sion-admin-card">
+    <div class="sion-card-header">
+        <span class="sion-card-title">Secciones (@Model.Secciones.Count())</span>
+        <span class="sion-card-hint">Las fijas (Hero, Contadores, CTA) se editan en Contenido fijo</span>
+    </div>
+
+    @if (!Model.Secciones.Any())
+    {
+        <div class="sion-admin-empty">No hay secciones creadas todavía.</div>
+    }
+    else
+    {
+        <div id="secciones-lista">
+        @foreach (var sec in Model.Secciones)
+        {
+            <div class="seccion-row @(!sec.EstaActiva ? "inactiva" : "")" data-id="@sec.Id">
+
+                <span class="seccion-orden drag-handle" title="Arrastrar para reordenar">#@sec.Orden</span>
+
+                <div class="seccion-thumb">
+                    @if (!string.IsNullOrEmpty(sec.RutaImagen))
+                    {
+                        <img src="@sec.RutaImagen" alt="@sec.Titulo" />
+                    }
+                    else
+                    {
+                        <span>≡</span>
+                    }
+                </div>
+
+                <div class="seccion-info">
+                    <div class="seccion-titulo">@sec.Titulo</div>
+                    <div class="seccion-desc">
+                        @(sec.Descripcion.Length > 70 ? sec.Descripcion[..70] + "…" : sec.Descripcion)
+                    </div>
+                    <span class="badge-estilo @EstiloClass(sec.Estilo)">@EstiloLabel(sec.Estilo)</span>
+                </div>
+
+                @* Toggle activo/inactivo *@
+                <form method="post" asp-page-handler="Toggle" class="d-flex align-items-center">
+                    <input type="hidden" name="id" value="@sec.Id" />
+                    <div class="form-check form-switch mb-0">
+                        <input class="form-check-input" type="checkbox"
+                               @(sec.EstaActiva ? "checked" : "")
+                               onchange="this.closest('form').submit()"
+                               title="@(sec.EstaActiva ? "Desactivar" : "Activar")" />
+                    </div>
+                </form>
+
+                @* Botón editar — data-* evita romper JS con caracteres especiales *@
+                <button class="btn-sion-row-edit"
+                        data-id="@sec.Id"
+                        data-titulo="@sec.Titulo"
+                        data-descripcion="@sec.Descripcion"
+                        data-estilo="@sec.Estilo"
+                        data-ruta="@(sec.RutaImagen ?? "")"
+                        data-activa="@sec.EstaActiva.ToString().ToLower()"
+                        onclick="abrirModalEditar(this)">
+                    ✏️ Editar
+                </button>
+
+                @* Botón eliminar *@
+                <button type="button" class="btn-sion-row-del"
+                        data-id="@sec.Id"
+                        data-titulo="@sec.Titulo"
+                        onclick="confirmarEliminar(this)">🗑️</button>
+
+            </div>
+        }
+        </div>@* fin #secciones-lista *@
+    }
+</div>
+
+@* FORM OCULTO PARA DELETE *@
+<form id="form-delete" method="post" asp-page-handler="Delete" style="display:none">
+    <input type="hidden" id="delete-id" name="id" value="0" />
+</form>
+
+@* MODAL CONFIRMAR ELIMINACIÓN *@
+<div class="sion-modal-overlay" id="modal-confirmar-delete" onclick="if(event.target===this)cerrarConfirmarDelete()">
+    <div class="sion-modal-box" style="max-width:400px">
+        <div class="sion-modal-title" style="color:#c0392b">🗑️ Eliminar sección</div>
+        <p style="font-size:0.88rem;color:#555;margin-bottom:6px">
+            ¿Estás seguro de que deseas eliminar
+            <strong id="delete-nombre"></strong>?
+        </p>
+        <p style="font-size:0.8rem;color:#999;margin-bottom:0">Esta acción no se puede deshacer.</p>
+        <div class="sion-modal-actions">
+            <button type="button" class="sion-admin-btn" onclick="cerrarConfirmarDelete()">Cancelar</button>
+            <button type="button" class="sion-admin-btn"
+                    style="background:#c0392b;color:#fff;border-color:#c0392b"
+                    onclick="ejecutarDelete()">Sí, eliminar</button>
+        </div>
+    </div>
+</div>
+
+@* MODAL CREAR / EDITAR *@
+<div class="sion-modal-overlay" id="modal-seccion" onclick="if(event.target===this)cerrarModal()">
+    <div class="sion-modal-box">
+        <div class="sion-modal-title" id="modal-titulo">Nueva sección</div>
+
+        <form method="post" asp-page-handler="Save" enctype="multipart/form-data">
+            @* Planos sin asp-for: JS controla estos valores antes del submit *@
+            @* Id = -1 es centinela "nueva seccion"; cualquier Id >= 0 = editar *@
+            <input type="hidden" id="modal-id"           name="Seccion.Id"         value="-1" />
+            <input type="hidden" id="modal-ruta-actual"  name="Seccion.RutaImagen" value="" />
+            <input type="hidden" id="modal-esta-activa"  name="Seccion.EstaActiva" value="true" />
+
+            <div class="mb-3">
+                <label class="sion-form-label">Título *</label>
+                <input class="sion-form-control" asp-for="Seccion.Titulo"
+                       id="modal-input-titulo" placeholder="Ej: Voluntariado comunitario" />
+                <span class="sion-form-error" asp-validation-for="Seccion.Titulo"></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="sion-form-label">Descripción *</label>
+                <textarea class="sion-form-control" asp-for="Seccion.Descripcion"
+                          id="modal-input-desc" rows="3"
+                          placeholder="Texto que aparecerá en la sección..."></textarea>
+                <span class="sion-form-error" asp-validation-for="Seccion.Descripcion"></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="sion-form-label">Estilo de sección *</label>
+                <div class="estilo-grid">
+                    <div class="estilo-option" id="opt-ImagenDerecha" onclick="selEstilo('ImagenDerecha')">
+                        <span class="estilo-icon">▶🖼️</span>Imagen derecha
+                    </div>
+                    <div class="estilo-option" id="opt-ImagenIzquierda" onclick="selEstilo('ImagenIzquierda')">
+                        <span class="estilo-icon">🖼️◀</span>Imagen izquierda
+                    </div>
+                    <div class="estilo-option" id="opt-TextoSolo" onclick="selEstilo('TextoSolo')">
+                        <span class="estilo-icon">≡</span>Solo texto
+                    </div>
+                </div>
+                <input type="hidden" id="modal-estilo-hidden" name="Seccion.Estilo" value="" />
+                <span class="sion-form-error" asp-validation-for="Seccion.Estilo"></span>
+            </div>
+
+            <div class="mb-3" id="campo-imagen">
+                <label class="sion-form-label">Imagen</label>
+                <div id="preview-actual" style="display:none" class="sion-imagen-preview mb-2">
+                    <img id="preview-img" src="" alt="Imagen actual" />
+                    <span class="sion-imagen-hint">Imagen actual — subí una nueva para reemplazarla</span>
+                </div>
+                <input type="file" class="sion-form-control" asp-for="ImagenFile"
+                       accept=".jpg,.jpeg,.png,.webp" />
+                <span class="sion-form-hint">JPG, PNG o WebP — máximo 5 MB</span>
+                <span class="sion-form-error" asp-validation-for="ImagenFile"></span>
+            </div>
+
+            <div class="sion-modal-actions">
+                <button type="button" class="sion-admin-btn" onclick="cerrarModal()">Cancelar</button>
+                <button type="submit" class="sion-admin-btn primary">Guardar sección</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.2/Sortable.min.js"></script>
+    <script>
+        // ── Drag & Drop reordenamiento ────────────────────────────
+        const lista = document.getElementById('secciones-lista');
+        if (lista) {
+            Sortable.create(lista, {
+                handle: '.drag-handle',
+                animation: 150,
+                ghostClass: 'seccion-row-ghost',
+                onEnd: function () {
+                    // Recoge IDs en el nuevo orden visual
+                    const ids = [...lista.querySelectorAll('.seccion-row')]
+                        .map(el => parseInt(el.dataset.id));
+
+                    // Actualiza los números #N visualmente
+                    lista.querySelectorAll('.seccion-orden').forEach((el, i) => {
+                        el.textContent = '#' + (i + 1);
+                    });
+
+                    // POST silencioso al servidor
+                    const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+                    fetch('?handler=Reordenar', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'RequestVerificationToken': token
+                        },
+                        body: JSON.stringify(ids)
+                    }).catch(() => {
+                        // Si falla, recarga para mostrar orden real de BD
+                        window.location.reload();
+                    });
+                }
+            });
+        }
+
+        // ── Abrir modal NUEVA sección ─────────────────────────────
+        function abrirModalNueva() {
+            document.getElementById('modal-titulo').textContent      = 'Nueva sección';
+            document.getElementById('modal-id').value                = '-1';   // centinela
+            document.getElementById('modal-ruta-actual').value       = '';
+            document.getElementById('modal-esta-activa').value       = 'true';
+            document.getElementById('modal-input-titulo').value      = '';
+            document.getElementById('modal-input-desc').value        = '';
+            document.getElementById('modal-estilo-hidden').value     = '';
+            document.querySelectorAll('.estilo-option').forEach(o => o.classList.remove('selected'));
+            document.getElementById('preview-actual').style.display  = 'none';
+            const fi = document.querySelector('[name="ImagenFile"]');
+            if (fi) fi.value = '';
+            actualizarCampoImagen();
+            document.getElementById('modal-seccion').classList.add('show');
+        }
+
+        // ── Abrir modal EDITAR sección (lee data-* del botón) ────
+        function abrirModalEditar(btn) {
+            const id         = btn.dataset.id;
+            const titulo     = btn.dataset.titulo;
+            const desc       = btn.dataset.descripcion;
+            const estilo     = btn.dataset.estilo;
+            const ruta       = btn.dataset.ruta || '';
+            const estaActiva = btn.dataset.activa;
+
+            document.getElementById('modal-titulo').textContent      = 'Editar sección';
+            document.getElementById('modal-id').value                = id;
+            document.getElementById('modal-ruta-actual').value       = ruta;
+            document.getElementById('modal-esta-activa').value       = estaActiva;
+            document.getElementById('modal-input-titulo').value      = titulo;
+            document.getElementById('modal-input-desc').value        = desc;
+            selEstilo(estilo);
+
+            const fi = document.querySelector('[name="ImagenFile"]');
+            if (fi) fi.value = '';
+
+            const preview = document.getElementById('preview-actual');
+            if (ruta) {
+                document.getElementById('preview-img').src = ruta;
+                preview.style.display = 'flex';
+            } else {
+                preview.style.display = 'none';
+            }
+
+            document.getElementById('modal-seccion').classList.add('show');
+        }
+
+        function cerrarModal() {
+            document.getElementById('modal-seccion').classList.remove('show');
+        }
+
+        // ── Seleccionar estilo ────────────────────────────────────
+        function selEstilo(valor) {
+            document.querySelectorAll('.estilo-option').forEach(o => o.classList.remove('selected'));
+            const opt = document.getElementById('opt-' + valor);
+            if (opt) opt.classList.add('selected');
+            document.getElementById('modal-estilo-hidden').value = valor;
+            actualizarCampoImagen();
+        }
+
+        function actualizarCampoImagen() {
+            const estilo = document.getElementById('modal-estilo-hidden').value;
+            document.getElementById('campo-imagen').style.display =
+                estilo === 'TextoSolo' ? 'none' : 'block';
+        }
+
+        // ── Modal confirmar eliminación (lee data-* del botón) ──
+        function confirmarEliminar(btn) {
+            document.getElementById('delete-id').value           = btn.dataset.id;
+            document.getElementById('delete-nombre').textContent = '"' + btn.dataset.titulo + '"';
+            document.getElementById('modal-confirmar-delete').classList.add('show');
+        }
+
+        function cerrarConfirmarDelete() {
+            document.getElementById('modal-confirmar-delete').classList.remove('show');
+        }
+
+        function ejecutarDelete() {
+            document.getElementById('form-delete').submit();
+        }
+
+        // Auto-dismiss toast
+        const toast = document.getElementById('sionToast');
+        if (toast) {
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(20px)';
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+    </script>
+}
+
+@functions {
+    static string EstiloLabel(string e) => e switch
+    {
+        "ImagenDerecha" => "▶ imagen derecha",
+        "ImagenIzquierda" => "◀ imagen izquierda",
+        "TextoSolo" => "≡ texto solo",
+        _ => e
+    };
+    static string EstiloClass(string e) => e switch
+    {
+        "ImagenDerecha" => "badge-img-der",
+        "ImagenIzquierda" => "badge-img-izq",
+        "TextoSolo" => "badge-txt-solo",
+        _ => ""
+    };
+}

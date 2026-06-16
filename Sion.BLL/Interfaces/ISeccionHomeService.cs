@@ -16,5 +16,6 @@ namespace Sion.BLL.Interfaces
         Task UpdateAsync(SeccionHomeViewModel viewModel, string usuarioEmail);
         Task DeleteAsync(int id, string usuarioEmail);
         Task ToggleActivaAsync(int id, string usuarioEmail);
+        Task ReordenarAsync(List<int> ids, string usuarioEmail);
     }
 }

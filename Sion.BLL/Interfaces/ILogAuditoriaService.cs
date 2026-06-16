@@ -6,5 +6,6 @@ namespace Sion.BLL.Interfaces
     {
         Task RegistrarAsync(string accion, string entidadAfectada, string usuarioEmail, string detalle);
         Task<IEnumerable<LogAuditoriaViewModel>> GetAllAsync();
+        Task<IEnumerable<LogAuditoriaViewModel>> GetByFechasAsync(DateTime desde, DateTime hasta);
     }
 }

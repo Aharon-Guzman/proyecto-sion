@@ -1,0 +1,261 @@
+@page
+@model Sion.PL.Pages.Admin.Galeria.IndexModel
+@{
+    ViewData["Title"]      = "Galería";
+    ViewData["ActivePage"] = "Galeria";
+}
+
+@if (Model.ToastMensaje != null)
+{
+    <div class="sion-toast @(Model.ToastTipo == "ok" ? "exito" : "error")" id="sionToast">
+        <span class="sion-toast-icon">@(Model.ToastTipo == "ok" ? "✓" : "✕")</span>
+        <span>@Model.ToastMensaje</span>
+        <button onclick="this.parentElement.remove()" class="sion-toast-close">✕</button>
+    </div>
+}
+
+@section TopbarAction {
+    <button class="sion-admin-btn primary" onclick="abrirModalSubir()">+ Subir imagen</button>
+}
+
+<div class="sion-admin-card">
+    <div class="sion-card-header">
+        <span class="sion-card-title">
+            @if (!string.IsNullOrWhiteSpace(Model.Busqueda))
+            {
+                <span>@Model.TotalImagenes resultado@(Model.TotalImagenes != 1 ? "s" : "") para "@Model.Busqueda"</span>
+            }
+            else
+            {
+                <span>Imágenes (@Model.TotalImagenes)</span>
+            }
+        </span>
+        <span class="sion-card-hint">Las imágenes activas aparecen en la página pública de galería</span>
+    </div>
+
+    @* ── Barra de búsqueda ── *@
+    <div class="galeria-search-bar">
+        <form method="get" class="galeria-search-form">
+            <input type="hidden" name="Pagina" value="1" />
+            <input type="text"
+                   name="Busqueda"
+                   class="sion-form-control"
+                   placeholder="Buscar por título…"
+                   value="@Model.Busqueda"
+                   autocomplete="off" />
+            <button type="submit" class="sion-admin-btn">🔍 Buscar</button>
+            @if (!string.IsNullOrWhiteSpace(Model.Busqueda))
+            {
+                <a href="?Pagina=1" class="sion-admin-btn" style="color:#666">✕ Limpiar</a>
+            }
+        </form>
+    </div>
+
+    @if (!Model.Imagenes.Any())
+    {
+        <div class="sion-admin-empty">
+            @if (!string.IsNullOrWhiteSpace(Model.Busqueda))
+            {
+                <span>No se encontraron imágenes con ese título.</span>
+            }
+            else
+            {
+                <span>No hay imágenes subidas todavía.</span>
+            }
+        </div>
+    }
+    else
+    {
+        <table class="sion-admin-table">
+            <thead>
+                <tr>
+                    <th style="width:70px">Imagen</th>
+                    <th>Título</th>
+                    <th style="width:130px">Fecha subida</th>
+                    <th style="width:80px;text-align:center">Activa</th>
+                    <th style="width:80px;text-align:center">Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var img in Model.Imagenes)
+                {
+                    <tr class="@(!img.EstaActiva ? "sion-table-row-inactive" : "")">
+                        <td>
+                            <div class="galeria-admin-thumb">
+                                <img src="@img.RutaThumbnail" alt="@img.Titulo" />
+                            </div>
+                        </td>
+                        <td>
+                            <span class="sion-table-text">@img.Titulo</span>
+                        </td>
+                        <td>
+                            <span class="sion-table-hint">@img.FechaSubida.ToLocalTime().ToString("dd MMM yyyy")</span>
+                        </td>
+                        <td style="text-align:center">
+                            <form method="post" asp-page-handler="Toggle">
+                                <input type="hidden" name="id"       value="@img.Id" />
+                                <input type="hidden" name="pagina"     value="@Model.Pagina" />
+                                <input type="hidden" name="busqueda" value="@Model.Busqueda" />
+                                <div class="form-check form-switch mb-0 d-flex justify-content-center">
+                                    <input class="form-check-input" type="checkbox"
+                                           @(img.EstaActiva ? "checked" : "")
+                                           onchange="this.closest('form').submit()"
+                                           title="@(img.EstaActiva ? "Desactivar" : "Activar")" />
+                                </div>
+                            </form>
+                        </td>
+                        <td style="text-align:center">
+                            <button type="button" class="btn-sion-row-del"
+                                    data-id="@img.Id"
+                                    data-titulo="@img.Titulo"
+                                    onclick="confirmarEliminar(this)">🗑️</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        @* ── Paginación ── *@
+        @if (Model.TotalPaginas > 1)
+        {
+            <div class="galeria-paginacion">
+                @* Anterior *@
+                @if (Model.Pagina > 1)
+                {
+                    <a href="?Pagina=@(Model.Pagina - 1)&Busqueda=@Model.Busqueda" class="pag-btn">‹ Anterior</a>
+                }
+                else
+                {
+                    <span class="pag-btn disabled">‹ Anterior</span>
+                }
+
+                @* Números — ventana de 5 páginas centrada en la actual *@
+                @{
+                    int inicio = Math.Max(1, Model.Pagina - 2);
+                    int fin    = Math.Min(Model.TotalPaginas, inicio + 4);
+                    inicio     = Math.Max(1, fin - 4);
+                }
+
+                @if (inicio > 1)
+                {
+                    <a href="?Pagina=1&Busqueda=@Model.Busqueda" class="pag-btn">1</a>
+                    if (inicio > 2) { <span class="pag-ellipsis">…</span> }
+                }
+
+                @for (int p = inicio; p <= fin; p++)
+                {
+                    if (p == Model.Pagina)
+                    {
+                        <span class="pag-btn active">@p</span>
+                    }
+                    else
+                    {
+                        <a href="?Pagina=@p&Busqueda=@Model.Busqueda" class="pag-btn">@p</a>
+                    }
+                }
+
+                @if (fin < Model.TotalPaginas)
+                {
+                    if (fin < Model.TotalPaginas - 1) { <span class="pag-ellipsis">…</span> }
+                    <a href="?Pagina=@Model.TotalPaginas&Busqueda=@Model.Busqueda" class="pag-btn">@Model.TotalPaginas</a>
+                }
+
+                @* Siguiente *@
+                @if (Model.Pagina < Model.TotalPaginas)
+                {
+                    <a href="?Pagina=@(Model.Pagina + 1)&Busqueda=@Model.Busqueda" class="pag-btn">Siguiente ›</a>
+                }
+                else
+                {
+                    <span class="pag-btn disabled">Siguiente ›</span>
+                }
+
+                <span class="pag-info">Página @Model.Pagina de @Model.TotalPaginas</span>
+            </div>
+        }
+    }
+</div>
+
+@* FORM OCULTO PARA DELETE — preserva página y búsqueda *@
+<form id="form-delete" method="post" asp-page-handler="Delete" style="display:none">
+    <input type="hidden" id="delete-id" name="id"       value="0" />
+    <input type="hidden"                name="pagina"     value="@Model.Pagina" />
+    <input type="hidden"                name="busqueda" value="@Model.Busqueda" />
+</form>
+
+@* MODAL CONFIRMAR ELIMINACIÓN *@
+<div class="sion-modal-overlay" id="modal-confirmar-delete" onclick="if(event.target===this)cerrarConfirmarDelete()">
+    <div class="sion-modal-box" style="max-width:400px">
+        <div class="sion-modal-title" style="color:#c0392b">🗑️ Eliminar imagen</div>
+        <p style="font-size:0.88rem;color:#555;margin-bottom:6px">
+            ¿Estás seguro de que deseas eliminar
+            <strong id="delete-nombre"></strong>?
+        </p>
+        <p style="font-size:0.8rem;color:#999;margin-bottom:0">Se eliminarán también los archivos del servidor.</p>
+        <div class="sion-modal-actions">
+            <button type="button" class="sion-admin-btn" onclick="cerrarConfirmarDelete()">Cancelar</button>
+            <button type="button" class="sion-admin-btn"
+                    style="background:#c0392b;color:#fff;border-color:#c0392b"
+                    onclick="ejecutarDelete()">Sí, eliminar</button>
+        </div>
+    </div>
+</div>
+
+@* MODAL SUBIR IMAGEN *@
+<div class="sion-modal-overlay" id="modal-subir" onclick="if(event.target===this)cerrarModalSubir()">
+    <div class="sion-modal-box" style="max-width:440px">
+        <div class="sion-modal-title">📷 Subir imagen</div>
+
+        <form method="post" asp-page-handler="Subir" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label class="sion-form-label">Título *</label>
+                <input class="sion-form-control" name="NuevoTitulo"
+                       placeholder="Ej: Navidad comunitaria 2025" required />
+            </div>
+
+            <div class="mb-3">
+                <label class="sion-form-label">Imagen *</label>
+                <input type="file" class="sion-form-control" name="ArchivoNuevo"
+                       accept=".jpg,.jpeg,.png,.webp" required />
+                <span class="sion-form-hint">JPG, PNG o WebP — máximo 5 MB. Se genera WebP y thumbnail automáticamente.</span>
+            </div>
+
+            <div class="sion-modal-actions">
+                <button type="button" class="sion-admin-btn" onclick="cerrarModalSubir()">Cancelar</button>
+                <button type="submit" class="sion-admin-btn primary">Subir imagen</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function abrirModalSubir() {
+            document.getElementById('modal-subir').classList.add('show');
+        }
+        function cerrarModalSubir() {
+            document.getElementById('modal-subir').classList.remove('show');
+        }
+
+        function confirmarEliminar(btn) {
+            document.getElementById('delete-id').value           = btn.dataset.id;
+            document.getElementById('delete-nombre').textContent = '"' + btn.dataset.titulo + '"';
+            document.getElementById('modal-confirmar-delete').classList.add('show');
+        }
+        function cerrarConfirmarDelete() {
+            document.getElementById('modal-confirmar-delete').classList.remove('show');
+        }
+        function ejecutarDelete() {
+            document.getElementById('form-delete').submit();
+        }
+
+        const toast = document.getElementById('sionToast');
+        if (toast) {
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(20px)';
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+    </script>
+}

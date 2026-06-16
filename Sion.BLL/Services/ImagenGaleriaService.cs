@@ -76,13 +76,21 @@ namespace Sion.BLL.Services
             using var stream = archivo.OpenReadStream();
             using var imagen = await Image.LoadAsync(stream);
 
-            // Guardar original
+            // Guardar original (referencia sin modificar)
             await imagen.SaveAsync(rutaOriginal);
 
-            // Generar WebP
+            // Redimensionar a máx 1920px antes de generar WebP y thumbnail
+            // Reduce drásticamente el tiempo de encoding de imágenes grandes
+            if (imagen.Width > 1920)
+            {
+                var ratio = 1920.0 / imagen.Width;
+                imagen.Mutate(x => x.Resize(1920, (int)(imagen.Height * ratio)));
+            }
+
+            // Generar WebP (versión display — ya redimensionada si era muy grande)
             await imagen.SaveAsync(rutaWebP, new WebpEncoder());
 
-            // Generar thumbnail
+            // Generar thumbnail 300×300 crop
             imagen.Mutate(x => x.Resize(new ResizeOptions
             {
                 Size = new Size(ThumbnailSize, ThumbnailSize),
@@ -102,7 +110,16 @@ namespace Sion.BLL.Services
 
             await _repository.AddAsync(entidad);
             _logger.LogInformation("Imagen '{Titulo}' subida por {Usuario}", titulo, usuarioEmail);
-            await _auditoria.RegistrarAsync("Subir", "ImagenGaleria", usuarioEmail, $"Imagen '{titulo}' subida");
+
+            // Audit no-fatal: si falla el log no debe cancelar una subida ya completada
+            try
+            {
+                await _auditoria.RegistrarAsync("Subir", "ImagenGaleria", usuarioEmail, $"Imagen '{titulo}' subida");
+            }
+            catch (Exception exAudit)
+            {
+                _logger.LogError(exAudit, "Error al registrar auditoría de subida de imagen '{Titulo}'", titulo);
+            }
         }
 
         public async Task UpdateAsync(ImagenGaleriaViewModel viewModel, string usuarioEmail)
@@ -128,7 +145,8 @@ namespace Sion.BLL.Services
 
             await _repository.DeleteAsync(id);
             _logger.LogInformation("Imagen '{Titulo}' eliminada por {Usuario}", entidad.Titulo, usuarioEmail);
-            await _auditoria.RegistrarAsync("Eliminar", "ImagenGaleria", usuarioEmail, $"Imagen '{entidad.Titulo}' eliminada");
+            try { await _auditoria.RegistrarAsync("Eliminar", "ImagenGaleria", usuarioEmail, $"Imagen '{entidad.Titulo}' eliminada"); }
+            catch (Exception ex) { _logger.LogError(ex, "Error al auditar eliminación de imagen"); }
         }
 
         public async Task ToggleActivaAsync(int id, string usuarioEmail)
@@ -139,7 +157,8 @@ namespace Sion.BLL.Services
             entidad.EstaActiva = !entidad.EstaActiva;
 
             await _repository.UpdateAsync(entidad);
-            await _auditoria.RegistrarAsync("Toggle", "ImagenGaleria", usuarioEmail, $"Imagen '{entidad.Titulo}' → activa: {entidad.EstaActiva}");
+            try { await _auditoria.RegistrarAsync("Toggle", "ImagenGaleria", usuarioEmail, $"Imagen '{entidad.Titulo}' → activa: {entidad.EstaActiva}"); }
+            catch (Exception ex) { _logger.LogError(ex, "Error al auditar toggle de imagen"); }
         }
 
         private void EliminarArchivo(string rutaRelativa)
