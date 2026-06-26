@@ -17,6 +17,9 @@ var builder = WebApplication.CreateBuilder(args);
 // ?? Razor Pages ???????????????????????????????????????????????
 builder.Services.AddRazorPages();
 
+// Antiforgery: permite que los POST AJAX (PayPal) envíen el token por header
+builder.Services.AddAntiforgery(options => options.HeaderName = "RequestVerificationToken");
+
 // ?? Base de datos ?????????????????????????????????????????????
 builder.Services.AddDbContext<SionDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("SionDb")));
@@ -34,6 +37,7 @@ builder.Services.AddScoped<IImagenGaleriaService, ImagenGaleriaService>();
 builder.Services.AddScoped<IDonacionService, DonacionService>();
 builder.Services.AddScoped<IConfiguracionSitioService, ConfiguracionSitioService>();
 builder.Services.AddScoped<ILogAuditoriaService, LogAuditoriaService>();
+builder.Services.AddScoped<IPayPalService, PayPalService>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 
 // Servicio de correo

@@ -47,12 +47,21 @@
                     </div>
                 </div>
 
+                @Html.AntiForgeryToken()
+
                 <div class="sion-dona-paypal mt-4">
                     <p class="sion-dona-seguro">🔒 Pago seguro procesado por PayPal</p>
-                    <!-- PayPal SDK — se integra en F-005.4 Sprint 5 -->
                     <div id="paypal-button-container"></div>
-                    <div class="sion-dona-placeholder">
-                        <p>Integración PayPal próximamente</p>
+                    <div id="dona-exito" style="display:none" class="sion-dona-exito">
+                        <span class="dona-exito-icon">✅</span>
+                        <div>
+                            <strong>¡Gracias por tu donación!</strong>
+                            <p id="dona-exito-detalle" class="mb-0"></p>
+                        </div>
+                    </div>
+                    <div id="dona-error" style="display:none" class="sion-dona-error">
+                        <span>⚠️</span>
+                        <p id="dona-error-msg" class="mb-0"></p>
                     </div>
                 </div>
 
@@ -109,3 +118,123 @@
         </div>
     </div>
 </section>
+
+@section Scripts {
+    @* SDK de PayPal — client-id viene del PageModel para no hardcodear en la vista *@
+    <script src="https://www.paypal.com/sdk/js?client-id=@Model.PayPalClientId&currency=USD"
+            data-sdk-integration-source="button-factory"></script>
+
+    <script>
+        // ── Monto seleccionado ───────────────────────────────────────────────
+        let montoSeleccionado = @(Model.Monto ?? 50);
+
+        function sionSeleccionarMonto(btn) {
+            document.querySelectorAll('.sion-monto-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            montoSeleccionado = parseFloat(btn.dataset.monto);
+            document.getElementById('montoPersonalizado').value = '';
+            reiniciarBotonPayPal();
+        }
+
+        document.getElementById('montoPersonalizado').addEventListener('input', function () {
+            const val = parseFloat(this.value);
+            if (val > 0) {
+                document.querySelectorAll('.sion-monto-btn').forEach(b => b.classList.remove('active'));
+                montoSeleccionado = val;
+                reiniciarBotonPayPal();
+            }
+        });
+
+        function obtenerMonto() {
+            const personalizado = parseFloat(document.getElementById('montoPersonalizado').value);
+            return personalizado > 0 ? personalizado : montoSeleccionado;
+        }
+
+        const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value ?? '';
+
+        // ── Botón PayPal ─────────────────────────────────────────────────────
+        function renderizarBotonPayPal() {
+            paypal.Buttons({
+                style: {
+                    color:  'blue',
+                    shape:  'rect',
+                    label:  'donate',
+                    height: 45
+                },
+
+                // Paso 1: crea la orden en nuestro servidor → PayPal
+                createOrder: async () => {
+                    const monto = obtenerMonto();
+                    if (!monto || monto <= 0) {
+                        alert('Por favor ingresá un monto válido.');
+                        return;
+                    }
+
+                    const res = await fetch('?handler=CrearOrden', {
+                        method:  'POST',
+                        headers: {
+                            'Content-Type':             'application/json',
+                            'RequestVerificationToken': token
+                        },
+                        body: JSON.stringify({ monto })
+                    });
+
+                    const data = await res.json();
+                    if (data.error) throw new Error(data.error);
+                    return data.orderId;
+                },
+
+                // Paso 2: usuario aprobó → capturamos en nuestro servidor
+                onApprove: async (data) => {
+                    const res = await fetch('?handler=CapturarOrden', {
+                        method:  'POST',
+                        headers: {
+                            'Content-Type':             'application/json',
+                            'RequestVerificationToken': token
+                        },
+                        body: JSON.stringify({ orderId: data.orderID })
+                    });
+
+                    const resultado = await res.json();
+
+                    document.getElementById('paypal-button-container').style.display = 'none';
+
+                    if (resultado.exitoso) {
+                        document.getElementById('dona-exito-detalle').textContent =
+                            `Recibimos tu donación de $${resultado.monto} ${resultado.moneda}. ¡Gracias, ${resultado.nombreDonante || 'donante'}!`;
+                        document.getElementById('dona-exito').style.display = 'flex';
+                    } else {
+                        document.getElementById('dona-error-msg').textContent =
+                            resultado.error ?? 'Hubo un problema al procesar tu donación.';
+                        document.getElementById('dona-error').style.display = 'flex';
+                    }
+                },
+
+                onError: (err) => {
+                    console.error('PayPal error:', err);
+                    document.getElementById('dona-error-msg').textContent =
+                        'Ocurrió un error con PayPal. Por favor intentá de nuevo.';
+                    document.getElementById('dona-error').style.display = 'flex';
+                },
+
+                onCancel: () => {
+                    // El usuario cerró el popup sin pagar — no hacemos nada
+                }
+
+            }).render('#paypal-button-container');
+        }
+
+        // Re-renderiza el botón si el monto cambia (PayPal SDK no lo actualiza solo)
+        let renderTimeout;
+        function reiniciarBotonPayPal() {
+            clearTimeout(renderTimeout);
+            renderTimeout = setTimeout(() => {
+                const container = document.getElementById('paypal-button-container');
+                container.innerHTML = '';
+                renderizarBotonPayPal();
+            }, 400);
+        }
+
+        renderizarBotonPayPal();
+    </script>
+}

@@ -932,12 +932,33 @@ main {
     margin-bottom: 12px;
 }
 
-.sion-dona-placeholder {
-    border: 2px dashed #dde3ea;
-    border-radius: 12px;
-    padding: 32px;
-    text-align: center;
-    color: #aaa;
+/* Resultado donación */
+.sion-dona-exito {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    background: #eaf7ef;
+    border: 1px solid #a8d5b5;
+    border-radius: 10px;
+    padding: 16px 20px;
+    color: #1e6e3a;
+    font-size: 0.9rem;
+}
+
+.dona-exito-icon {
+    font-size: 1.4rem;
+    flex-shrink: 0;
+}
+
+.sion-dona-error {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: #fdecea;
+    border: 1px solid #f5c6c2;
+    border-radius: 10px;
+    padding: 16px 20px;
+    color: #c0392b;
     font-size: 0.9rem;
 }
 
@@ -1493,7 +1514,7 @@ main {
     }
 
 .logs-search-bar {
-    padding: 12px 20px 0;
+    padding: 12px 20px 16px;
 }
 
     .logs-search-bar .sion-form-control {
@@ -1548,7 +1569,7 @@ main {
 
 /* GALERÍA ADMIN — BÚSQUEDA Y PAGINACIÓN */
 .galeria-search-bar {
-    padding: 12px 20px 0;
+    padding: 12px 20px 16px;
 }
 
 .galeria-search-form {
@@ -1926,4 +1947,54 @@ main {
 .sion-card-hint {
     font-size: 0.72rem;
     color: #aaa;
+}
+
+/* ── Contenido Fijo admin ─────────────────────────────────────────────── */
+.sion-admin-label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--sion-dark);
+    margin-bottom: 4px;
+}
+
+.sion-admin-input {
+    display: block;
+    width: 100%;
+    padding: 8px 12px;
+    font-size: 0.875rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    color: #111827;
+    background: #fff;
+    transition: border-color 0.15s;
+}
+.sion-admin-input:focus {
+    outline: none;
+    border-color: var(--sion-primary);
+    box-shadow: 0 0 0 3px rgba(245,165,36,0.15);
+}
+
+.sion-admin-hint {
+    font-size: 0.72rem;
+    color: #9ca3af;
+    margin-top: 4px;
+}
+
+.sion-admin-btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 20px;
+    background: var(--sion-primary);
+    color: #fff;
+    font-size: 0.875rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+.sion-admin-btn-primary:hover { background: #d99a3a; color: #fff; }
 }

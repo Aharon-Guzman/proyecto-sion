@@ -1,0 +1,180 @@
+@page
+@model Sion.PL.Pages.Admin.Donaciones.IndexModel
+@using System.Globalization
+@{
+    ViewData["Title"]      = "Donaciones";
+    ViewData["ActivePage"] = "Donaciones";
+
+    var desdeVal = Model.Desde?.ToString("yyyy-MM-dd") ?? DateTime.UtcNow.AddDays(-30).ToString("yyyy-MM-dd");
+    var hastaVal = Model.Hasta?.ToString("yyyy-MM-dd") ?? DateTime.UtcNow.ToString("yyyy-MM-dd");
+}
+
+@section TopbarAction {
+    <a href="?handler=ExportarCsv&Desde=@desdeVal&Hasta=@hastaVal"
+       class="sion-admin-btn">⬇ Exportar CSV</a>
+}
+
+<div class="sion-admin-card">
+    <div class="sion-card-header">
+        <span class="sion-card-title">
+            @Model.TotalDonaciones donación@(Model.TotalDonaciones != 1 ? "es" : "")
+            · <strong>@Model.MontoTotal.ToString("C0", new CultureInfo("en-US"))</strong> en el rango
+        </span>
+        <span class="sion-card-hint">Las donaciones se registran automáticamente al capturar el pago en PayPal</span>
+    </div>
+
+    @* ── Filtro de fechas ── *@
+    <div class="logs-filter-bar">
+        <form method="get" class="logs-filter-form">
+            <label class="sion-form-label mb-0">Desde</label>
+            <input type="date" name="Desde" class="sion-form-control" value="@desdeVal" />
+
+            <label class="sion-form-label mb-0">Hasta</label>
+            <input type="date" name="Hasta" class="sion-form-control" value="@hastaVal" />
+
+            <button type="submit" class="sion-admin-btn">Filtrar</button>
+            <a href="/Admin/Donaciones/Index" class="sion-admin-btn" style="color:#666">Limpiar</a>
+        </form>
+    </div>
+
+    @if (!Model.Donaciones.Any())
+    {
+        <div class="sion-admin-empty">No hay donaciones en el rango seleccionado.</div>
+    }
+    else
+    {
+        @* Búsqueda global client-side *@
+        <div class="logs-search-bar">
+            <input type="text" id="dona-search" class="sion-form-control"
+                   placeholder="Buscar por donante, email o ID…"
+                   oninput="filtrarDonaciones(this.value)" autocomplete="off" />
+        </div>
+
+        <div class="logs-table-wrap">
+            <table class="sion-admin-table" id="dona-table">
+                <thead>
+                    <tr>
+                        <th style="width:150px">ID PayPal</th>
+                        <th style="width:160px">Donante</th>
+                        <th>Email</th>
+                        <th style="width:110px;text-align:right">Monto</th>
+                        <th style="width:90px">Tipo</th>
+                        <th style="width:140px">Fecha</th>
+                        <th style="width:120px;text-align:center">Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var d in Model.Donaciones)
+                    {
+                        <tr>
+                            <td>
+                                <span class="sion-table-hint" style="font-family:monospace;font-size:0.75rem">@d.TransaccionPaypalId</span>
+                            </td>
+                            <td>
+                                <span class="sion-table-text">@(string.IsNullOrWhiteSpace(d.NombreDonante) ? "Anónimo" : d.NombreDonante)</span>
+                            </td>
+                            <td>
+                                <span class="sion-table-hint">@(string.IsNullOrWhiteSpace(d.EmailDonante) ? "—" : d.EmailDonante)</span>
+                            </td>
+                            <td style="text-align:right">
+                                <strong>@d.Monto.ToString("C2", new CultureInfo("en-US"))</strong>
+                                <span class="sion-table-hint">@d.Moneda</span>
+                            </td>
+                            <td>
+                                <span class="sion-table-hint">@(d.EsRecurrente ? "Mensual" : "Única")</span>
+                            </td>
+                            <td>
+                                <span class="sion-table-hint">@d.FechaRegistro.ToLocalTime().ToString("dd MMM yyyy")</span>
+                                <span class="log-hora">@d.FechaRegistro.ToLocalTime().ToString("HH:mm")</span>
+                            </td>
+                            <td style="text-align:center">
+                                <span class="sion-admin-badge @EstadoBadgeClass(d.Estado)">@EstadoLabel(d.Estado)</span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="logs-count-footer" id="dona-count-footer">
+            Mostrando <strong id="dona-visible-count">@Model.Donaciones.Count()</strong> de @Model.TotalDonaciones donaciones
+        </div>
+
+        @* ── Paginación ── *@
+        @if (Model.TotalPaginas > 1)
+        {
+            <div class="galeria-paginacion mt-3">
+                @if (Model.Pagina > 1)
+                {
+                    <a href="?Pagina=@(Model.Pagina - 1)&Desde=@desdeVal&Hasta=@hastaVal" class="pag-btn">‹</a>
+                }
+                else
+                {
+                    <span class="pag-btn disabled">‹</span>
+                }
+
+                @for (int p = Math.Max(1, Model.Pagina - 2); p <= Math.Min(Model.TotalPaginas, Model.Pagina + 2); p++)
+                {
+                    if (p == Model.Pagina)
+                    {
+                        <span class="pag-btn active">@p</span>
+                    }
+                    else
+                    {
+                        <a href="?Pagina=@p&Desde=@desdeVal&Hasta=@hastaVal" class="pag-btn">@p</a>
+                    }
+                }
+
+                @if (Model.Pagina < Model.TotalPaginas)
+                {
+                    <a href="?Pagina=@(Model.Pagina + 1)&Desde=@desdeVal&Hasta=@hastaVal" class="pag-btn">›</a>
+                }
+                else
+                {
+                    <span class="pag-btn disabled">›</span>
+                }
+
+                <span class="pag-info">Página @Model.Pagina de @Model.TotalPaginas</span>
+            </div>
+        }
+    }
+</div>
+
+@section Scripts {
+    <script>
+        function filtrarDonaciones(q) {
+            const term  = q.toLowerCase().trim();
+            const rows  = document.querySelectorAll('#dona-table tbody tr');
+            let visible = 0;
+
+            rows.forEach(row => {
+                const texto = row.textContent.toLowerCase();
+                const show  = !term || texto.includes(term);
+                row.style.display = show ? '' : 'none';
+                if (show) visible++;
+            });
+
+            const counter = document.getElementById('dona-visible-count');
+            if (counter) counter.textContent = visible;
+        }
+    </script>
+}
+
+@functions {
+    static string EstadoBadgeClass(string estado) => estado.ToUpper() switch
+    {
+        "COMPLETED" => "sion-admin-badge-completado",
+        "PENDING"   => "sion-admin-badge-pendiente",
+        _           => "sion-admin-badge-revertido"
+    };
+
+    static string EstadoLabel(string estado) => estado.ToUpper() switch
+    {
+        "COMPLETED" => "Completado",
+        "PENDING"   => "Pendiente",
+        "DECLINED"  => "Rechazado",
+        "REFUNDED"  => "Reembolsado",
+        "REVERSED"  => "Revertido",
+        _           => estado
+    };
+}

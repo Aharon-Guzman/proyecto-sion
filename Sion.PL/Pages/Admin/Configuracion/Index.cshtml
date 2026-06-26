@@ -1,0 +1,147 @@
+@page
+@model Sion.PL.Pages.Admin.Configuracion.IndexModel
+@{
+    Layout = "/Pages/Admin/Shared/_LayoutAdmin.cshtml";
+}
+
+@if (Model.ToastMensaje != null)
+{
+    <div class="sion-toast @(Model.ToastTipo == "ok" ? "exito" : "error")" id="sionToast">
+        <span class="sion-toast-icon">@(Model.ToastTipo == "ok" ? "✓" : "✕")</span>
+        <span>@Model.ToastMensaje</span>
+        <button onclick="this.parentElement.remove()" class="sion-toast-close">✕</button>
+    </div>
+}
+
+<div class="sion-admin-topbar">
+    <div>
+        <div class="sion-admin-topbar-title">Contenido fijo</div>
+        <div class="sion-admin-topbar-sub">Hero, contadores y CTA de donación — secciones siempre visibles</div>
+    </div>
+</div>
+
+<div class="sion-admin-content">
+
+    <!-- HERO -->
+    <div class="sion-admin-card mb-4">
+        <div class="sion-admin-card-header">
+            <span>🖼️ Hero — Banner principal</span>
+        </div>
+        <div class="sion-admin-card-body">
+            <form method="post" asp-page-handler="Hero" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label class="sion-admin-label">Título principal *</label>
+                        <input type="text" name="HeroTitulo" value="@Model.HeroTitulo"
+                               class="sion-admin-input" maxlength="200" required />
+                    </div>
+                    <div class="col-12">
+                        <label class="sion-admin-label">Subtítulo</label>
+                        <input type="text" name="HeroSubtitulo" value="@Model.HeroSubtitulo"
+                               class="sion-admin-input" maxlength="500" />
+                    </div>
+                    <div class="col-12">
+                        <label class="sion-admin-label">Imagen de fondo</label>
+                        <div class="d-flex align-items-center gap-3">
+                            @if (!string.IsNullOrEmpty(Model.HeroImagenActual))
+                            {
+                                <img src="@Model.HeroImagenActual" alt="Hero actual"
+                                     style="width:100px;height:60px;object-fit:cover;border-radius:6px;border:1px solid #e5e7eb" />
+                            }
+                            else
+                            {
+                                <div style="width:100px;height:60px;background:#f3f4f6;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:1.5rem">🖼️</div>
+                            }
+                            <div>
+                                <input type="file" name="HeroImagen" accept="image/*" class="sion-admin-input" style="max-width:300px" />
+                                <div class="sion-admin-hint">JPG, PNG o WebP · Máx 5MB · Se generará WebP automáticamente</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 text-end">
+                        <button type="submit" class="sion-admin-btn-primary">Guardar Hero</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- CONTADORES -->
+    <div class="sion-admin-card mb-4">
+        <div class="sion-admin-card-header">
+            <span>🔢 Contadores animados</span>
+        </div>
+        <div class="sion-admin-card-body">
+            <form method="post" asp-page-handler="Contadores">
+                @Html.AntiForgeryToken()
+                <div class="row g-3">
+                    <div class="col-6 col-md-3">
+                        <label class="sion-admin-label">Personas beneficiadas</label>
+                        <input type="number" name="ContadorBeneficiados" value="@Model.ContadorBeneficiados"
+                               class="sion-admin-input" min="0" required />
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <label class="sion-admin-label">Beneficiados directos</label>
+                        <input type="number" name="ContadorDirectos" value="@Model.ContadorDirectos"
+                               class="sion-admin-input" min="0" required />
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <label class="sion-admin-label">Años de trabajo</label>
+                        <input type="number" name="ContadorAnios" value="@Model.ContadorAnios"
+                               class="sion-admin-input" min="0" required />
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <label class="sion-admin-label">Programas activos</label>
+                        <input type="number" name="ContadorProgramas" value="@Model.ContadorProgramas"
+                               class="sion-admin-input" min="0" required />
+                    </div>
+                    <div class="col-12 text-end">
+                        <button type="submit" class="sion-admin-btn-primary">Guardar contadores</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- CTA DONACIÓN -->
+    <div class="sion-admin-card">
+        <div class="sion-admin-card-header">
+            <span>💛 CTA Donación — Bloque de llamada a donar</span>
+        </div>
+        <div class="sion-admin-card-body">
+            <form method="post" asp-page-handler="Cta">
+                @Html.AntiForgeryToken()
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label class="sion-admin-label">Título *</label>
+                        <input type="text" name="CtaTitulo" value="@Model.CtaTitulo"
+                               class="sion-admin-input" maxlength="200" required />
+                    </div>
+                    <div class="col-12">
+                        <label class="sion-admin-label">Subtítulo</label>
+                        <input type="text" name="CtaSubtitulo" value="@Model.CtaSubtitulo"
+                               class="sion-admin-input" maxlength="500" />
+                    </div>
+                    <div class="col-12 text-end">
+                        <button type="submit" class="sion-admin-btn-primary">Guardar CTA</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    <script>
+        const toast = document.getElementById('sionToast');
+        if (toast) {
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(20px)';
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+    </script>
+}
