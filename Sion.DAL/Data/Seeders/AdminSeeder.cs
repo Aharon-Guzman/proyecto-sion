@@ -34,6 +34,11 @@ namespace Sion.DAL.Data.Seeders
                 if (result.Succeeded)
                     await userManager.AddToRoleAsync(adminUser, "Admin");
             }
+
+            // Garantizar bloqueo por intentos habilitado (para admins creados antes de configurar Lockout)
+            adminUser = await userManager.FindByEmailAsync(adminEmail);
+            if (adminUser != null && !await userManager.GetLockoutEnabledAsync(adminUser))
+                await userManager.SetLockoutEnabledAsync(adminUser, true);
         }
     }
 }

@@ -44,6 +44,13 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    overflow-x: hidden; /* evita scroll horizontal y gestos táctiles "rotos" en móvil */
+}
+
+/* Imágenes responsive por defecto — reglas más específicas (galería, etc.) la sobreescriben */
+img {
+    max-width: 100%;
+    height: auto;
 }
 
 /* sticky-top ya ocupa su espacio — no necesita padding-top */
@@ -441,7 +448,7 @@ main {
         top: 0;
         width: 55%;
         height: 100%;
-        background-image: linear-gradient(to right, var(--sion-dark) 0%, transparent 90%), linear-gradient(to bottom, var(--sion-dark) 0%, transparent 30%), url('/images/hero-bg.jpeg');
+        background-image: linear-gradient(to right, var(--sion-dark) 0%, transparent 90%), linear-gradient(to bottom, var(--sion-dark) 0%, transparent 30%), var(--hero-bg, url('/images/hero-bg.jpeg'));
         background-size: cover;
         background-position: center top;
         opacity: 0.6;

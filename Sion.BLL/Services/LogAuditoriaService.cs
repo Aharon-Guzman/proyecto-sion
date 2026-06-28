@@ -21,7 +21,7 @@ namespace Sion.BLL.Services
                 Accion = accion,
                 EntidadAfectada = entidadAfectada,
                 UsuarioEmail = usuarioEmail,
-                FechaHora = DateTime.UtcNow,
+                FechaHora = DateTime.Now,
                 Detalle = detalle
             };
 

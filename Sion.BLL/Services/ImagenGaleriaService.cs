@@ -105,7 +105,7 @@ namespace Sion.BLL.Services
                 RutaWebP = $"/uploads/galeria/{nombreBase}.webp",
                 RutaThumbnail = $"/uploads/galeria/{nombreBase}_thumb.webp",
                 EstaActiva = true,
-                FechaSubida = DateTime.UtcNow
+                FechaSubida = DateTime.Now
             };
 
             await _repository.AddAsync(entidad);

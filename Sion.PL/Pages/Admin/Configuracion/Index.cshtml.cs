@@ -75,7 +75,8 @@ namespace Sion.PL.Pages.Admin.Configuracion
             // Imagen opcional
             if (HeroImagen != null && HeroImagen.Length > 0)
             {
-                var ruta = await GuardarImagenHeroAsync(HeroImagen);
+                var rutaAnterior = (await _config.GetByClaveAsync("Hero:ImagenFondo"))?.Valor;
+                var ruta = await GuardarImagenHeroAsync(HeroImagen, rutaAnterior);
                 if (ruta != null)
                 {
                     await _config.UpdateAsync(new ConfiguracionSitioViewModel
@@ -140,7 +141,7 @@ namespace Sion.PL.Pages.Admin.Configuracion
             return vm?.Id ?? 0;
         }
 
-        private async Task<string?> GuardarImagenHeroAsync(IFormFile archivo)
+        private async Task<string?> GuardarImagenHeroAsync(IFormFile archivo, string? rutaAnterior)
         {
             try
             {
@@ -150,18 +151,30 @@ namespace Sion.PL.Pages.Admin.Configuracion
 
                 var carpeta = Path.Combine(_env.WebRootPath, "uploads", "hero");
                 Directory.CreateDirectory(carpeta);
-                var ruta = Path.Combine(carpeta, "hero.webp");
 
-                using var stream = archivo.OpenReadStream();
-                using var image  = await SixLabors.ImageSharp.Image.LoadAsync(stream);
-                if (image.Width > 1920)
+                // Nombre único: al cambiar la URL en cada subida, el navegador no sirve la imagen vieja desde caché
+                var nombre = $"hero-{Guid.NewGuid()}.webp";
+                var ruta   = Path.Combine(carpeta, nombre);
+
+                using (var stream = archivo.OpenReadStream())
+                using (var image  = await SixLabors.ImageSharp.Image.LoadAsync(stream))
                 {
-                    var ratio = 1920.0 / image.Width;
-                    image.Mutate(x => x.Resize(1920, (int)(image.Height * ratio)));
+                    if (image.Width > 1920)
+                    {
+                        var ratio = 1920.0 / image.Width;
+                        image.Mutate(x => x.Resize(1920, (int)(image.Height * ratio)));
+                    }
+                    await image.SaveAsWebpAsync(ruta);
                 }
-                await image.SaveAsWebpAsync(ruta);
 
-                return "/uploads/hero/hero.webp";
+                // Borrar la imagen anterior del disco (solo si era una imagen del hero)
+                if (!string.IsNullOrEmpty(rutaAnterior) && rutaAnterior.StartsWith("/uploads/hero/"))
+                {
+                    var vieja = Path.Combine(_env.WebRootPath, rutaAnterior.TrimStart('/'));
+                    if (System.IO.File.Exists(vieja)) System.IO.File.Delete(vieja);
+                }
+
+                return $"/uploads/hero/{nombre}";
             }
             catch (Exception ex)
             {

@@ -119,7 +119,8 @@
     <div class="sion-modal-box">
         <div class="sion-modal-title" id="modal-titulo">Nueva sección</div>
 
-        <form method="post" asp-page-handler="Save" enctype="multipart/form-data">
+        <form method="post" asp-page-handler="Save" enctype="multipart/form-data"
+              onsubmit="return validarSeccion(event)">
             @* Planos sin asp-for: JS controla estos valores antes del submit *@
             @* Id = -1 es centinela "nueva seccion"; cualquier Id >= 0 = editar *@
             <input type="hidden" id="modal-id"           name="Seccion.Id"         value="-1" />
@@ -130,7 +131,7 @@
                 <label class="sion-form-label">Título *</label>
                 <input class="sion-form-control" asp-for="Seccion.Titulo"
                        id="modal-input-titulo" placeholder="Ej: Voluntariado comunitario" />
-                <span class="sion-form-error" asp-validation-for="Seccion.Titulo"></span>
+                <span class="sion-form-error" id="err-titulo" asp-validation-for="Seccion.Titulo"></span>
             </div>
 
             <div class="mb-3">
@@ -138,7 +139,7 @@
                 <textarea class="sion-form-control" asp-for="Seccion.Descripcion"
                           id="modal-input-desc" rows="3"
                           placeholder="Texto que aparecerá en la sección..."></textarea>
-                <span class="sion-form-error" asp-validation-for="Seccion.Descripcion"></span>
+                <span class="sion-form-error" id="err-desc" asp-validation-for="Seccion.Descripcion"></span>
             </div>
 
             <div class="mb-3">
@@ -155,7 +156,7 @@
                     </div>
                 </div>
                 <input type="hidden" id="modal-estilo-hidden" name="Seccion.Estilo" value="" />
-                <span class="sion-form-error" asp-validation-for="Seccion.Estilo"></span>
+                <span class="sion-form-error" id="err-estilo" asp-validation-for="Seccion.Estilo"></span>
             </div>
 
             <div class="mb-3" id="campo-imagen">
@@ -167,7 +168,7 @@
                 <input type="file" class="sion-form-control" asp-for="ImagenFile"
                        accept=".jpg,.jpeg,.png,.webp" />
                 <span class="sion-form-hint">JPG, PNG o WebP — máximo 5 MB</span>
-                <span class="sion-form-error" asp-validation-for="ImagenFile"></span>
+                <span class="sion-form-error" id="err-imagen" asp-validation-for="ImagenFile"></span>
             </div>
 
             <div class="sion-modal-actions">
@@ -229,6 +230,7 @@
             const fi = document.querySelector('[name="ImagenFile"]');
             if (fi) fi.value = '';
             actualizarCampoImagen();
+            limpiarErrores();
             document.getElementById('modal-seccion').classList.add('show');
         }
 
@@ -260,6 +262,7 @@
                 preview.style.display = 'none';
             }
 
+            limpiarErrores();
             document.getElementById('modal-seccion').classList.add('show');
         }
 
@@ -280,6 +283,43 @@
             const estilo = document.getElementById('modal-estilo-hidden').value;
             document.getElementById('campo-imagen').style.display =
                 estilo === 'TextoSolo' ? 'none' : 'block';
+        }
+
+        // ── Validación client-side del modal (mantiene el modal abierto) ──
+        function setErr(id, msg) {
+            const el = document.getElementById(id);
+            if (el) el.textContent = msg;
+        }
+        function limpiarErrores() {
+            ['err-titulo', 'err-desc', 'err-estilo', 'err-imagen'].forEach(i => setErr(i, ''));
+        }
+        function validarSeccion(e) {
+            let ok = true;
+            const titulo     = document.getElementById('modal-input-titulo').value.trim();
+            const desc       = document.getElementById('modal-input-desc').value.trim();
+            const estilo     = document.getElementById('modal-estilo-hidden').value;
+            const rutaActual = document.getElementById('modal-ruta-actual').value;
+            const fileInput  = document.querySelector('[name="ImagenFile"]');
+            const file       = (fileInput && fileInput.files.length) ? fileInput.files[0] : null;
+
+            setErr('err-titulo', titulo ? '' : 'El título es obligatorio.');      if (!titulo) ok = false;
+            setErr('err-desc',   desc   ? '' : 'La descripción es obligatoria.');  if (!desc)   ok = false;
+            setErr('err-estilo', estilo ? '' : 'Seleccioná un estilo.');           if (!estilo) ok = false;
+
+            let errImg = '';
+            const requiereImagen = estilo && estilo !== 'TextoSolo';
+            if (requiereImagen && !file && !rutaActual) {
+                errImg = 'Este estilo requiere una imagen.'; ok = false;
+            }
+            if (file) {
+                const ext = file.name.split('.').pop().toLowerCase();
+                if (!['jpg', 'jpeg', 'png', 'webp'].includes(ext)) { errImg = 'Formato no permitido (JPG, PNG o WebP).'; ok = false; }
+                else if (file.size > 5 * 1024 * 1024)              { errImg = 'La imagen supera los 5 MB.';              ok = false; }
+            }
+            setErr('err-imagen', errImg);
+
+            if (!ok) { e.preventDefault(); return false; }
+            return true;
         }
 
         // ── Modal confirmar eliminación (lee data-* del botón) ──

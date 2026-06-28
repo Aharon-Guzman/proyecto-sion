@@ -50,7 +50,7 @@ namespace Sion.BLL.Services
                 NombreDonante = viewModel.NombreDonante,
                 EmailDonante = viewModel.EmailDonante,
                 EsRecurrente = viewModel.EsRecurrente,
-                FechaRegistro = DateTime.UtcNow,
+                FechaRegistro = DateTime.Now,
                 Estado = viewModel.Estado
             };
 

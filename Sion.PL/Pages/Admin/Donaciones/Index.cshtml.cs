@@ -38,8 +38,8 @@ namespace Sion.PL.Pages.Admin.Donaciones
             ViewData["Title"]      = "Donaciones";
             ViewData["TopbarSub"]  = "Historial de donaciones recibidas vía PayPal";
 
-            var desde = Desde ?? DateTime.UtcNow.AddDays(-30).Date;
-            var hasta = (Hasta ?? DateTime.UtcNow.Date).AddDays(1).AddTicks(-1);
+            var desde = Desde ?? DateTime.Now.AddDays(-30).Date;
+            var hasta = (Hasta ?? DateTime.Now.Date).AddDays(1).AddTicks(-1);
 
             var todas = (await _donaciones.GetByFechasAsync(desde, hasta))
                             .OrderByDescending(d => d.FechaRegistro)
@@ -58,8 +58,8 @@ namespace Sion.PL.Pages.Admin.Donaciones
         // Handler GET para exportar CSV — ?handler=ExportarCsv&Desde=...&Hasta=...
         public async Task<IActionResult> OnGetExportarCsvAsync()
         {
-            var desde = Desde ?? DateTime.UtcNow.AddDays(-30).Date;
-            var hasta = (Hasta ?? DateTime.UtcNow.Date).AddDays(1).AddTicks(-1);
+            var desde = Desde ?? DateTime.Now.AddDays(-30).Date;
+            var hasta = (Hasta ?? DateTime.Now.Date).AddDays(1).AddTicks(-1);
 
             var lista = (await _donaciones.GetByFechasAsync(desde, hasta))
                             .OrderByDescending(d => d.FechaRegistro)
@@ -77,7 +77,7 @@ namespace Sion.PL.Pages.Admin.Donaciones
                     d.Monto.ToString("F2", CultureInfo.InvariantCulture),
                     $"\"{d.Moneda}\"",
                     $"\"{(d.EsRecurrente ? "Mensual" : "Única")}\"",
-                    $"\"{d.FechaRegistro.ToLocalTime():dd/MM/yyyy HH:mm}\"",
+                    $"\"{d.FechaRegistro:dd/MM/yyyy HH:mm}\"",
                     $"\"{d.Estado}\""
                 ));
             }

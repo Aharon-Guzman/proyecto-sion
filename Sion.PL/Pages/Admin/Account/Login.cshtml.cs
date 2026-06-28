@@ -9,6 +9,7 @@ namespace Sion.PL.Pages.Admin.Account
     public class LoginModel : PageModel
     {
         private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<IdentityUser> _userManager;
         private readonly ILogger<LoginModel> _logger;
 
         [BindProperty]
@@ -16,9 +17,13 @@ namespace Sion.PL.Pages.Admin.Account
 
         public string? ErrorMessage { get; set; }
 
-        public LoginModel(SignInManager<IdentityUser> signInManager, ILogger<LoginModel> logger)
+        public LoginModel(
+            SignInManager<IdentityUser> signInManager,
+            UserManager<IdentityUser> userManager,
+            ILogger<LoginModel> logger)
         {
             _signInManager = signInManager;
+            _userManager = userManager;
             _logger = logger;
         }
 
@@ -40,18 +45,33 @@ namespace Sion.PL.Pages.Admin.Account
 
             if (result.Succeeded)
             {
-                _logger.LogInformation("Admin {Email} iniciÛ sesiÛn.", Input.Email);
+                _logger.LogInformation("Admin {Email} inici√≥ sesi√≥n.", Input.Email);
                 return RedirectToPage("/Admin/Index");
             }
 
             if (result.IsLockedOut)
             {
                 _logger.LogWarning("Cuenta {Email} bloqueada por intentos fallidos.", Input.Email);
-                ErrorMessage = "Cuenta bloqueada temporalmente. Intent· en 15 minutos.";
+                ErrorMessage = "Cuenta bloqueada temporalmente por demasiados intentos. Intent√° de nuevo en 15 minutos.";
                 return Page();
             }
 
-            ErrorMessage = "Correo o contraseÒa incorrectos.";
+            // Feedback de intentos restantes antes del bloqueo
+            var user = await _userManager.FindByEmailAsync(Input.Email);
+            if (user != null && await _userManager.GetLockoutEnabledAsync(user))
+            {
+                var maximo    = _userManager.Options.Lockout.MaxFailedAccessAttempts;
+                var fallidos  = await _userManager.GetAccessFailedCountAsync(user);
+                var restantes = maximo - fallidos;
+                ErrorMessage = restantes > 0
+                    ? $"Correo o contrase√±a incorrectos. Te queda{(restantes == 1 ? "" : "n")} {restantes} intento{(restantes == 1 ? "" : "s")} antes del bloqueo."
+                    : "Correo o contrase√±a incorrectos.";
+            }
+            else
+            {
+                ErrorMessage = "Correo o contrase√±a incorrectos.";
+            }
+
             return Page();
         }
     }
@@ -62,7 +82,7 @@ namespace Sion.PL.Pages.Admin.Account
         [EmailAddress]
         public string Email { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "La contraseÒa es obligatoria")]
+        [Required(ErrorMessage = "La contrase√±a es obligatoria")]
         [DataType(DataType.Password)]
         public string Password { get; set; } = string.Empty;
 

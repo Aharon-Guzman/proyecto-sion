@@ -5,8 +5,8 @@
     ViewData["Title"]      = "Donaciones";
     ViewData["ActivePage"] = "Donaciones";
 
-    var desdeVal = Model.Desde?.ToString("yyyy-MM-dd") ?? DateTime.UtcNow.AddDays(-30).ToString("yyyy-MM-dd");
-    var hastaVal = Model.Hasta?.ToString("yyyy-MM-dd") ?? DateTime.UtcNow.ToString("yyyy-MM-dd");
+    var desdeVal = Model.Desde?.ToString("yyyy-MM-dd") ?? DateTime.Now.AddDays(-30).ToString("yyyy-MM-dd");
+    var hastaVal = Model.Hasta?.ToString("yyyy-MM-dd") ?? DateTime.Now.ToString("yyyy-MM-dd");
 }
 
 @section TopbarAction {
@@ -84,8 +84,8 @@
                                 <span class="sion-table-hint">@(d.EsRecurrente ? "Mensual" : "Única")</span>
                             </td>
                             <td>
-                                <span class="sion-table-hint">@d.FechaRegistro.ToLocalTime().ToString("dd MMM yyyy")</span>
-                                <span class="log-hora">@d.FechaRegistro.ToLocalTime().ToString("HH:mm")</span>
+                                <span class="sion-table-hint">@d.FechaRegistro.ToString("dd MMM yyyy")</span>
+                                <span class="log-hora">@d.FechaRegistro.ToString("HH:mm")</span>
                             </td>
                             <td style="text-align:center">
                                 <span class="sion-admin-badge @EstadoBadgeClass(d.Estado)">@EstadoLabel(d.Estado)</span>

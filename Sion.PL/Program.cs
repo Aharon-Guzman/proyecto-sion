@@ -45,7 +45,13 @@ builder.Services.AddScoped<ICorreoService, CorreoService>();
 builder.Services.AddHttpClient();
 
 // Identity
-builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+{
+    // Bloqueo por intentos fallidos: 5 intentos, 15 minutos de bloqueo
+    options.Lockout.MaxFailedAccessAttempts = 5;
+    options.Lockout.DefaultLockoutTimeSpan  = TimeSpan.FromMinutes(15);
+    options.Lockout.AllowedForNewUsers      = true;
+})
    .AddEntityFrameworkStores<SionDbContext>()
    .AddDefaultTokenProviders();
 
