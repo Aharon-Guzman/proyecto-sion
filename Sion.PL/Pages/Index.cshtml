@@ -22,19 +22,19 @@
 <section class="sion-contadores" id="contadores">
     <div class="container">
         <div class="row text-center gy-4">
-            <div class="col-6 col-md-3">
+            <div class="col-6 col-md-3 sion-reveal sion-reveal-delay-1">
                 <span class="sion-contador-numero" data-target="@Model.ContadorBeneficiados">0</span>
                 <span class="sion-contador-etiqueta">Personas beneficiadas</span>
             </div>
-            <div class="col-6 col-md-3">
+            <div class="col-6 col-md-3 sion-reveal sion-reveal-delay-2">
                 <span class="sion-contador-numero" data-target="@Model.ContadorDirectos">0</span>
                 <span class="sion-contador-etiqueta">Beneficiados directos</span>
             </div>
-            <div class="col-6 col-md-3">
+            <div class="col-6 col-md-3 sion-reveal sion-reveal-delay-3">
                 <span class="sion-contador-numero" data-target="@Model.ContadorProgramas">0</span>
                 <span class="sion-contador-etiqueta">Programas activos</span>
             </div>
-            <div class="col-6 col-md-3">
+            <div class="col-6 col-md-3 sion-reveal sion-reveal-delay-4">
                 <span class="sion-contador-numero" data-target="@Model.ContadorAnios" data-anios="true">0</span>
                 <span class="sion-contador-etiqueta">Años de trabajo</span>
             </div>
@@ -53,7 +53,7 @@
 
                 @if (seccion.Estilo == "ImagenIzquierda")
                 {
-                    <div class="col-lg-6 order-lg-1">
+                    <div class="col-lg-6 order-lg-1 sion-reveal-left">
                         <div class="sion-seccion-img">
                             @if (!string.IsNullOrEmpty(seccion.RutaImagen))
                             {
@@ -65,25 +65,25 @@
                             }
                         </div>
                     </div>
-                    <div class="col-lg-6 order-lg-2">
+                    <div class="col-lg-6 order-lg-2 sion-reveal-right">
                         <h2>@seccion.Titulo</h2>
                         <p>@seccion.Descripcion</p>
                     </div>
                 }
                 else if (seccion.Estilo == "TextoSolo")
                 {
-                    <div class="col-12 col-lg-8 mx-auto text-center">
+                    <div class="col-12 col-lg-8 mx-auto text-center sion-reveal">
                         <h2>@seccion.Titulo</h2>
                         <p>@seccion.Descripcion</p>
                     </div>
                 }
                 else
                 {
-                    <div class="col-lg-6">
+                    <div class="col-lg-6 sion-reveal-left">
                         <h2>@seccion.Titulo</h2>
                         <p>@seccion.Descripcion</p>
                     </div>
-                    <div class="col-lg-6">
+                    <div class="col-lg-6 sion-reveal-right">
                         <div class="sion-seccion-img">
                             @if (!string.IsNullOrEmpty(seccion.RutaImagen))
                             {
@@ -104,7 +104,7 @@
 <!-- ========== FIN SECCIONES DINÁMICAS ========== -->
 <!-- ========== CTA DONACIÓN ========== -->
 <section class="sion-cta" id="dona">
-    <div class="container text-center">
+    <div class="container text-center sion-reveal">
         <h2>@Model.CtaTitulo</h2>
         <p>@Model.CtaSubtitulo</p>
         <div class="sion-cta-montos">

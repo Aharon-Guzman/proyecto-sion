@@ -2087,4 +2087,60 @@ main {
 .sion-dona-contacto-valor a:hover {
     color: var(--sion-primary);
 }
+
+/* ══════════════════════════════════════════════════════════════
+   ANIMACIONES DE SCROLL — 2026-06-29
+   Fade-in y slide-in al entrar al viewport.
+   La clase .visible la agrega site.js via IntersectionObserver.
+   Para agregar el efecto a un elemento: añadir una de estas clases:
+     .sion-reveal         → aparece subiendo desde abajo
+     .sion-reveal-left    → aparece desde la izquierda
+     .sion-reveal-right   → aparece desde la derecha
+   Delays opcionales: .sion-reveal-delay-1 hasta -4
+   ══════════════════════════════════════════════════════════════ */
+
+.sion-reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+    will-change: opacity, transform;
+}
+
+.sion-reveal-left {
+    opacity: 0;
+    transform: translateX(-36px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+    will-change: opacity, transform;
+}
+
+.sion-reveal-right {
+    opacity: 0;
+    transform: translateX(36px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+    will-change: opacity, transform;
+}
+
+/* Estado final — el JS agrega esta clase al entrar al viewport */
+.sion-reveal.visible,
+.sion-reveal-left.visible,
+.sion-reveal-right.visible {
+    opacity: 1;
+    transform: none;
+}
+
+/* Delays escalonados para grupos de elementos (contadores, cards) */
+.sion-reveal-delay-1 { transition-delay: 0.10s; }
+.sion-reveal-delay-2 { transition-delay: 0.20s; }
+.sion-reveal-delay-3 { transition-delay: 0.30s; }
+.sion-reveal-delay-4 { transition-delay: 0.40s; }
+
+/* Respeto a preferencias de accesibilidad del sistema operativo */
+@media (prefers-reduced-motion: reduce) {
+    .sion-reveal,
+    .sion-reveal-left,
+    .sion-reveal-right {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+    }
 }

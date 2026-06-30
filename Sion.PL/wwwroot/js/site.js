@@ -39,16 +39,17 @@
     // ----------------------------------------------------------
     var contadores = document.querySelectorAll('.sion-contador-numero');
     if (contadores.length > 0) {
-        var observer = new IntersectionObserver(function (entries) {
+        var contadorObserver = new IntersectionObserver(function (entries) {
             entries.forEach(function (entry) {
                 if (entry.isIntersecting) {
                     animarContador(entry.target);
+                    contadorObserver.unobserve(entry.target); // fix 2026-06-29: solo dispara una vez
                 }
             });
         }, { threshold: 0.3 });
 
         contadores.forEach(function (el) {
-            observer.observe(el);
+            contadorObserver.observe(el);
         });
     }
     function animarContador(el) {
@@ -87,4 +88,31 @@
             setTimeout(function () { banner.style.display = 'none'; }, 500);
         }, 5000);
     }
+
+    // ----------------------------------------------------------
+    // 6. Reveal al scroll — 2026-06-29
+    // Busca todos los elementos con .sion-reveal / .sion-reveal-left /
+    // .sion-reveal-right y les agrega la clase .visible cuando entran
+    // al viewport. El CSS en site.css (sección ANIMACIONES DE SCROLL)
+    // define la transición de opacidad y posición.
+    // Un solo observer global para eficiencia — no crea uno por elemento.
+    // ----------------------------------------------------------
+    var revealEls = document.querySelectorAll(
+        '.sion-reveal, .sion-reveal-left, .sion-reveal-right'
+    );
+    if (revealEls.length > 0) {
+        var revealObserver = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    revealObserver.unobserve(entry.target); // solo se anima una vez
+                }
+            });
+        }, { threshold: 0.12 }); // 12% visible basta para disparar
+
+        revealEls.forEach(function (el) {
+            revealObserver.observe(el);
+        });
+    }
+    // ----------------------------------------------------------
 })();
