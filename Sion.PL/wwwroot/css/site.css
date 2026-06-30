@@ -67,13 +67,23 @@ main {
     padding: 14px 0;
 }
 
-/* Logo — blanco, letra grande con tracking */
+/* Logo navbar */
 .sion-brand {
-    color: #fff !important;
-    font-size: 1.5rem;
-    font-weight: 700;
-    letter-spacing: 2px;
     text-decoration: none;
+    display: flex;
+    align-items: center;
+}
+
+.sion-navbar-logo {
+    height: 48px;
+    width: auto;
+}
+
+.sion-navbar-brand-text {
+    color: #fff;
+    font-size: 1.4rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
 }
 
 /* Links de navegación */
@@ -257,6 +267,15 @@ main {
     margin-bottom: 0;
 }
 
+.sion-footer-social {
+    font-size: 1.4rem;
+    text-decoration: none !important;
+}
+
+.sion-footer-social:hover {
+    opacity: 0.8;
+}
+
 
 /* ============================================================
    6. SECCIONES REUTILIZABLES (Index, Nosotros, etc.)
@@ -304,6 +323,13 @@ main {
     justify-content: center;
     background: #EBF3FB;
     font-size: 5rem;
+}
+
+.sion-seccion-img-real {
+    width: 100%;
+    height: 320px;
+    object-fit: cover;
+    border-radius: 16px;
 }
 
     .sion-seccion-img img {
@@ -2004,4 +2030,61 @@ main {
     transition: background 0.2s;
 }
 .sion-admin-btn-primary:hover { background: #d99a3a; color: #fff; }
+
+/* ── Donaciones: tarjeta SINPE temporal ─────────────────────────── */
+.sion-dona-sinpe-card {
+    background: #fff;
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+
+.sion-dona-logo {
+    height: 90px;
+    width: auto;
+}
+
+.sion-dona-sinpe-texto {
+    color: #555;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.sion-dona-contacto-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 14px 18px;
+}
+
+.sion-dona-contacto-icon {
+    font-size: 1.4rem;
+    flex-shrink: 0;
+}
+
+.sion-dona-contacto-label {
+    font-size: 0.75rem;
+    color: #888;
+    margin: 0 0 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.sion-dona-contacto-valor {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--sion-dark);
+    margin: 0;
+}
+
+.sion-dona-contacto-valor a {
+    color: var(--sion-dark);
+    text-decoration: none;
+}
+
+.sion-dona-contacto-valor a:hover {
+    color: var(--sion-primary);
+}
 }

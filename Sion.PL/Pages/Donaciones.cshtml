@@ -21,23 +21,63 @@
             <!-- PANEL DE DONACIÓN -->
             <div class="col-lg-6">
                 <span class="sion-badge">Tu aporte importa</span>
-                <h2 class="mt-2 mb-4">Elegí un monto</h2>
+                <h2 class="mt-2 mb-4">Hacé tu donación</h2>
+
+                @*
+                    ============================================================
+                    PAYPAL TEMPORALMENTE DESACTIVADO
+                    La cuenta business de PayPal está pendiente de aprobación.
+                    Para reactivar PayPal:
+                      1. Eliminar el bloque de tarjeta SINPE de abajo (entre los comentarios INICIO/FIN SINPE)
+                      2. Descomentar el bloque PAYPAL DESACTIVADO que le sigue
+                      3. En el @section Scripts al final del archivo:
+                         - Descomentar el script src de PayPal SDK
+                         - Descomentar todo el bloque script de JS
+                    ============================================================
+                *@
+
+                @* === INICIO BLOQUE SINPE (eliminar cuando PayPal esté listo) === *@
+                <div class="sion-dona-sinpe-card text-center py-4 px-3">
+                    <img src="~/images/Logo.png" alt="Proyecto Sion" class="sion-dona-logo mb-4" />
+
+                    <p class="sion-dona-sinpe-texto mb-4">
+                        Podés apoyarnos directamente a través de <strong>SINPE Móvil</strong>
+                        o escribirnos por correo. Tu aporte llega al 100% a nuestra comunidad.
+                    </p>
+
+                    <div class="sion-dona-contacto-row">
+                        <div class="sion-dona-contacto-icon sion-dona-icon-sinpe">📱</div>
+                        <div class="text-start">
+                            <p class="sion-dona-contacto-label">SINPE Móvil</p>
+                            <p class="sion-dona-contacto-valor">+506 6486 9767</p>
+                        </div>
+                    </div>
+
+                    <div class="sion-dona-contacto-row mt-2">
+                        <div class="sion-dona-contacto-icon sion-dona-icon-email">✉️</div>
+                        <div class="text-start">
+                            <p class="sion-dona-contacto-label">Correo electrónico</p>
+                            <p class="sion-dona-contacto-valor">
+                                <a href="mailto:info@sioncr.org">info@sioncr.org</a>
+                            </p>
+                        </div>
+                    </div>
+
+                    <p class="sion-dona-nota mt-4 mb-0">
+                        ¡Gracias por tu generosidad y apoyo a nuestra misión!
+                    </p>
+                </div>
+                @* === FIN BLOQUE SINPE === *@
+
+                @* === INICIO BLOQUE PAYPAL DESACTIVADO (descomentar cuando esté listo) ===
+                NOTA: dentro de este comentario Razor las expresiones @ no se procesan.
+                Al reactivar, recorda reemplazar las comillas internas de los ternarios.
 
                 <div class="sion-dona-montos">
-                    <button class="sion-monto-btn @(Model.Monto == 50 || Model.Monto == null ? "active" : "")"
-                            onclick="sionSeleccionarMonto(this)" data-monto="50">
-                        $50
-                    </button>
-                    <button class="sion-monto-btn @(Model.Monto == 100 ? "active" : "")"
-                            onclick="sionSeleccionarMonto(this)" data-monto="100">
-                        $100
-                    </button>
-                    <button class="sion-monto-btn @(Model.Monto == 500 ? "active" : "")"
-                            onclick="sionSeleccionarMonto(this)" data-monto="500">
-                        $500
-                    </button>
+                    <button class="sion-monto-btn active" onclick="sionSeleccionarMonto(this)" data-monto="50">$50</button>
+                    <button class="sion-monto-btn" onclick="sionSeleccionarMonto(this)" data-monto="100">$100</button>
+                    <button class="sion-monto-btn" onclick="sionSeleccionarMonto(this)" data-monto="500">$500</button>
                 </div>
-
                 <div class="sion-dona-otro mt-3">
                     <label class="sion-form-label">O ingresá otro monto (USD)</label>
                     <div class="sion-dona-input-wrap">
@@ -46,9 +86,7 @@
                                placeholder="0.00" min="1" step="1" />
                     </div>
                 </div>
-
-                @Html.AntiForgeryToken()
-
+                ANTIFORGERY_TOKEN_AQUI
                 <div class="sion-dona-paypal mt-4">
                     <p class="sion-dona-seguro">🔒 Pago seguro procesado por PayPal</p>
                     <div id="paypal-button-container"></div>
@@ -64,11 +102,7 @@
                         <p id="dona-error-msg" class="mb-0"></p>
                     </div>
                 </div>
-
-                <p class="sion-dona-nota mt-3">
-                    También podés contactarnos a <a href="mailto:info@sioncr.org">info@sioncr.org</a>
-                    para coordinar una donación en otra modalidad.
-                </p>
+                === FIN BLOQUE PAYPAL DESACTIVADO *@
             </div>
 
             <!-- IMPACTO -->
@@ -120,10 +154,9 @@
 </section>
 
 @section Scripts {
-    @* SDK de PayPal — client-id viene del PageModel para no hardcodear en la vista *@
+    @* PAYPAL SCRIPTS DESACTIVADOS — para reactivar: quitar el @* de esta línea y el correspondiente al final del bloque
     <script src="https://www.paypal.com/sdk/js?client-id=@Model.PayPalClientId&currency=USD"
             data-sdk-integration-source="button-factory"></script>
-
     <script>
         // ── Monto seleccionado ───────────────────────────────────────────────
         let montoSeleccionado = @(Model.Monto ?? 50);
@@ -237,4 +270,5 @@
 
         renderizarBotonPayPal();
     </script>
+    *@
 }
