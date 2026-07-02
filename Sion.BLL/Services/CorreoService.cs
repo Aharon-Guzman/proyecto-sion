@@ -39,9 +39,15 @@ namespace Sion.BLL.Services
 
             using var smtp = new SmtpClient(host, puerto)
             {
-                Credentials = new NetworkCredential(usuario, contrasena),
                 EnableSsl = true
             };
+
+            // Con Direct Send (puerto 25, sin autenticación) la contraseña queda vacía
+            // y no se envían credenciales; con un SMTP autenticado sí se envían.
+            if (!string.IsNullOrEmpty(contrasena))
+            {
+                smtp.Credentials = new NetworkCredential(usuario, contrasena);
+            }
 
             var correo = new MailMessage
             {
@@ -80,9 +86,13 @@ namespace Sion.BLL.Services
 
             using var smtp = new SmtpClient(host, puerto)
             {
-                Credentials = new NetworkCredential(usuario, contrasena),
                 EnableSsl = true
             };
+
+            if (!string.IsNullOrEmpty(contrasena))
+            {
+                smtp.Credentials = new NetworkCredential(usuario, contrasena);
+            }
 
             var correo = new MailMessage
             {
