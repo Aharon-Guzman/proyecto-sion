@@ -23,5 +23,8 @@
   <ItemGroup>
     <Folder Include="Pages\Admin\Shared\" />
   </ItemGroup>
-
+	
+	<ItemGroup>
+		<Content Update="wwwroot\uploads\**" CopyToPublishDirectory="Never" />
+	</ItemGroup>
 </Project>
