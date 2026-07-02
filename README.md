@@ -8,6 +8,9 @@ Sitio web institucional full-stack desarrollado para una organización sin fines
 
 SION es una plataforma web que permite a la organización gestionar su presencia en línea de forma autónoma, sin necesidad de conocimientos técnicos. Incluye un panel administrativo (CMS simplificado), galería fotográfica, formulario de contacto y módulo de donaciones integrado con PayPal.
 
+## Sitio en Producción
+
+**[https://sioncr.org](https://sioncr.org)** — Sistema desplegado y en uso activo por la organización.
 ---
 
 ## Stack Tecnológico
